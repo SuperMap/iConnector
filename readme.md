@@ -21,6 +21,16 @@ SuperMap iClient 6R (2012) for SMAdapter 是一款基于SuperMap iClient 6R(2012
 
 详见“LICENSE.txt”。
 
+### 五、效果展示
+
+1、如下是在百度地图上面叠加了全国的等级符号专题图
+
+![original_THmC_4b6f000174941190](http://fmn.rrimg.com/fmn063/20130515/1520/large_0yFU_6c87000038de1191.jpg)
+
+2、如下是在天地图上通过几何查询iserver上的各国首都
+
+![original_THmC_4b6f000174941190](http://fmn.rrimg.com/fmn063/20130515/1520/large_AkWW_252300003898118c.jpg)
+
 
 
 
