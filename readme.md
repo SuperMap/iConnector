@@ -15,7 +15,7 @@ SuperMap iClient 6R (2012) for SMAdapter 是一款基于SuperMap iClient 6R(2012
 
 ### 三、使用说明
 
-提供了针对百度和天地图的不同接口，详见“SMAdapter for Baidu帮助.docx”和“SMAdapter for Tianditu帮助.docx”。
+提供了针对百度和天地图的不同接口，详见“SMAdapter for Baidu help.docx”和“SMAdapter for Tianditu help.docx”。
 
 ### 四、许可授权
 
