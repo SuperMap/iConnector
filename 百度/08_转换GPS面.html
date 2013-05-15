@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+        body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+        #l-map{height:100%;width:78%;float:left;border-right:2px solid #bcbcbc;}
+        #r-result{height:100%;width:20%;float:left;}
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=95a21d20cfe4df8d03f267282e62d8ae"></script>
+    <script type="text/javascript" src="http://developer.baidu.com/map/jsdemo/demo/changeMore.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="../SMAdapter.js"></script>
+    <title>GPS点生成面进行转换</title>
+</head>
+<body>
+<div id="allmap"></div>
+</body>
+</html>
+<script type="text/javascript">
+    var map = new BMap.Map("allmap");
+    map.centerAndZoom(new BMap.Point(116.404, 39.915), 15);
+    var i;
+    var markers = [];
+    map.addEventListener("click",function(e){
+        alert(e.point.lng + "," + e.point.lat);
+    });
+    var points = [new BMap.Point(116.3786889372559,39.90762965106183),
+        new BMap.Point(116.38632786853032,39.90795884517671),
+        new BMap.Point(116.38534009082035,39.897432133833574),
+        new BMap.Point(116.37624058825688,39.89789300648029)
+
+    ];
+    var polygon = new BMap.Polygon(points);
+    function acallback(polygons){
+
+        map.addOverlay(polygons[0]);
+    }
+
+    setTimeout(function(){
+        SMAdapter.transferPolygonToBaidu([polygon],new SuperMap.Projection("EPSG:4326"),acallback);        //一秒之后开始进行坐标转换。参数2，表示是从GCJ-02坐标到百度坐标。参数0，表示是从GPS到百度坐标
+    }, 1000);
+</script>

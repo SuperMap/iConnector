@@ -1,0 +1,37 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="../SMAdapter.js"></script>
+    <script type="text/javascript">
+        var map,url="http://localhost:8090/iserver/services/map-world/rest/maps/World";
+        function init()
+        {
+            map = new TMap("mapDiv",{projection: "EPSG:4326"});
+            map.centerAndZoom(new TLngLat(116.40969,39.89945),1);
+            map.enableHandleMouseScroll();
+            //http://localhost:8090/iserver/services/map-world/rest/maps/World
+            //http://localhost:8090/iserver/services/map-china400/rest/maps/China
+            var layer = SMAdapter.getTiandituLayer(url);
+            map.addLayer(layer);
+        }
+        function transferToEPSG3857()
+        {
+            map.switchingMaps("EPSG:900913");
+        }
+        function transferToEPSG4326()
+        {
+            map.switchingMaps("EPSG:4326");
+        }
+    </script>
+</head>
+<body onload="init()">
+          <div id="mapDiv" style="width: 1400px;height: 700px"></div>
+          <input type="button" onclick="transferToEPSG3857()" value="转换为EPSG：3857" >
+          <input type="button" onclick="transferToEPSG4326()" value="转换为EPSG：4326" >
+</body>
+</html>
+

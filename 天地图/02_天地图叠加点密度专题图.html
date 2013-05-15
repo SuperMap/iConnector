@@ -1,0 +1,67 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="../SMAdapter.js"></script>
+    <script type="text/javascript">
+        var map,url = "http://localhost:8090/iserver/services/map-world/rest/maps/World";
+        function init()
+        {
+            map = new TMap("mapDiv",{projection: "EPSG:4326"});
+            map.centerAndZoom(new TLngLat(116.40969,39.89945),1);
+            map.enableHandleMouseScroll();
+        }
+        //生成点密度专题图
+        function addThemeDotDensity()
+        {
+            var themeService = new SuperMap.REST.ThemeService(url, {eventListeners:{"processCompleted": themeCompleted, "processFailed": themeFailed}}),
+                    dotStyle = new SuperMap.REST.ServerStyle({
+                        markerSize: 3,
+                        markerSymbolID: 12
+                    }),
+                    themeDotDensity = new SuperMap.REST.ThemeDotDensity({
+                        dotExpression: "Pop_1994",
+                        value: 5000000,
+                        style: dotStyle
+                    }),
+                    themeParameters = new SuperMap.REST.ThemeParameters({
+                        themes: [themeDotDensity],
+                        datasetNames: ["Countries"],
+                        dataSourceNames: ["World"]
+                    });
+            themeService.processAsync(themeParameters);
+        }
+        //生成专题图后将其叠加到天地图上面
+        function themeCompleted(themeEventArgs) {
+            if(themeEventArgs.result.resourceInfo.id) {
+                var layer = SMAdapter.getTiandituLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
+                map.addLayer(layer);
+            }
+        }
+        //生成专题图失败弹出错误信息
+        function themeFailed(serviceFailedEventArgs) {
+            alert(serviceFailedEventArgs.error.errorMsg);
+        }
+        function EPSG3857()
+        {
+            map.switchingMaps("EPSG:900913");
+        }
+        function EPSG4326()
+        {
+            map.switchingMaps("EPSG:4326");
+        }
+    </script>
+</head>
+<body onload="init()">
+          <div id="mapDiv" style="width: 1400px;height: 700px"></div>
+          <div>
+              <input type="button" onclick="addThemeDotDensity()" value="创建点密度专题图" />
+              <input type="button" onclick="EPSG3857()" value="转换为EPSG：3857" />
+              <input type="button" onclick="EPSG4326()" value="转换为EPSG：4326" />
+          </div>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="../SMAdapter.js"></script>
+    <script type="text/javascript">
+        var map,polygonTool,url="http://localhost:8090/iserver/services/map-world/rest/maps/World";
+        function init()
+        {
+            map = new TMap("mapDiv",{projection: "EPSG:4326"});
+            map.centerAndZoom(new TLngLat(116.40969,39.89945),3);
+            map.enableHandleMouseScroll();
+
+
+        }
+        function drawPolygon()
+        {
+            var config = {
+                strokeColor:"blue", //折线颜色
+                fillColor:"#FFFFFF",    //填充颜色。当参数为空时，折线覆盖物将没有填充效果
+                strokeWeight:"5px", //折线的宽度，以像素为单位
+                strokeOpacity:0.5,  //折线的透明度，取值范围0 - 1
+                fillOpacity:0.5,            //填充的透明度，取值范围0 - 1
+                strokeStyle:"solid",    //折线的样式，solid或dashed
+                showLabel:false
+            };
+            polygonTool = new TPolygonTool(map,config);
+            TEvent.bind(polygonTool,"draw",map,onDrawLine);
+            polygonTool.open();
+        }
+        function onDrawLine(bounds,line)
+        {
+            polygonTool.close();
+            var points = [];
+            for(var i = 0;i<bounds.length;i++)
+            {
+                points.push(new SuperMap.Geometry.Point(bounds[i].getLng(),bounds[i].getLat()));
+            }
+            var polygon = new SuperMap.Geometry.Polygon(
+                                                     [new SuperMap.Geometry.LinearRing(points)]
+                                );
+            var queryParam, queryByGeometryParameters, queryService;
+            queryParam = new SuperMap.REST.FilterParameter({name: "Capitals@World.1"});
+            queryByGeometryParameters = new SuperMap.REST.QueryByGeometryParameters({
+                queryParams: [queryParam],
+                geometry: polygon,
+                spatialQueryMode: SuperMap.REST.SpatialQueryMode.INTERSECT
+            });
+            queryService = new SuperMap.REST.QueryByGeometryService(url, {
+                eventListeners: {
+                    "processCompleted": processCompleted,
+                    "processFailed": processFailed
+                }
+            });
+            queryService.processAsync(queryByGeometryParameters);
+        }
+        function processCompleted(queryEventArgs) {
+
+            var i, j, result = queryEventArgs.result;
+            if (result && result.recordsets) {
+                for (i=0, recordsets=result.recordsets, len=recordsets.length; i<len; i++) {
+                    if (recordsets[i].features) {
+                        for (j=0; j<recordsets[i].features.length; j++) {
+                            var feature = recordsets[i].features[j];
+                            var point = feature.geometry;
+                            if(point.CLASS_NAME == SuperMap.Geometry.Point.prototype.CLASS_NAME){
+                                //这里其实没必要转换，本身就是4326坐标系
+                                var lonlats = SMAdapter.transferPointToTianditu([point]);
+                                var marker = new TMarker(lonlats[0]);
+                                map.addOverLay(marker);
+                            }else{
+
+                            }
+
+                        }
+                    }
+                }
+            }
+        }
+        function processFailed(e) {
+            alert(e.error.errorMsg);
+        }
+
+    </script>
+</head>
+<body onload="init()">
+          <div id="mapDiv" style="width: 1400px;height: 700px"></div>
+          <div>
+              <input type="button" onclick="drawPolygon()" value="几何查询" >
+          </div>
+
+</body>
+</html>
