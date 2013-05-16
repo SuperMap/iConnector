@@ -5,7 +5,7 @@
     <title></title>
     <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="../SMAdapter.js"></script>
+    <script type="text/javascript" src="../Adapter.js"></script>
     <script type="text/javascript">
         var map,polygonTool,url="http://localhost:8090/iserver/services/map-world/rest/maps/World";
         function init()
@@ -60,7 +60,7 @@
 
                             linearRings = new SuperMap.Geometry.LinearRing(gpsPoints);
                             var    region = new SuperMap.Geometry.Polygon([linearRings]);
-                            var regions = SMAdapter.transferPolygonToTianditu([region],new SuperMap.Projection("EPSG:4326"));
+                            var regions = SuperMap.Web.Adapter.transferPolygonToTianditu([region],new SuperMap.Projection("EPSG:4326"));
 
                             map.addOverLay(regions[0]);
                         }

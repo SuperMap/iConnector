@@ -5,7 +5,7 @@
     <title></title>
     <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="../SMAdapter.js"></script>
+    <script type="text/javascript" src="../Adapter.js"></script>
     <script type="text/javascript">
         var map,url = "http://localhost:8090/iserver/services/map-world/rest/maps/World";
         function init()
@@ -37,7 +37,7 @@
         //生成专题图后将其叠加到天地图上面
         function themeCompleted(themeEventArgs) {
             if(themeEventArgs.result.resourceInfo.id) {
-                var layer = SMAdapter.getTiandituLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
+                var layer = SuperMap.Web.Adapter.getTiandituLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
                 map.addLayer(layer);
             }
         }
