@@ -5,16 +5,18 @@
     <title></title>
     <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="../Adapter.js"></script>
+    <script type="text/javascript" src="TiandituAdapter.js"></script>
     <script type="text/javascript">
         var map,polygonTool,url="http://localhost:8090/iserver/services/map-world/rest/maps/World";
         function init()
         {
-            map = new TMap("mapDiv",{projection: "EPSG:4326"});
-            map.centerAndZoom(new TLngLat(116.40969,39.89945),3);
+            map = new TMap("mapDiv",{projection: "EPSG:900913"});
+            var poi = {x:12957282.31163,y:4853357.17424};
+            var lat = SuperMap.Web.Adapter.TiandituAdapter.transferPoint([poi],new SuperMap.Projection("EPSG:3857"))[0];
+            map.centerAndZoom(new TLngLat(116.39739,39.90844),4);
             map.enableHandleMouseScroll();
-
-
+            var marker = new TMarker(lat);
+            map.addOverLay(marker);
         }
         function drawPolygon()
         {
@@ -68,7 +70,7 @@
                             var point = feature.geometry;
                             if(point.CLASS_NAME == SuperMap.Geometry.Point.prototype.CLASS_NAME){
                                 //这里其实没必要转换，本身就是4326坐标系
-                                var lonlats = SuperMap.Web.Adapter.transferPointToTianditu([point]);
+                                var lonlats = SuperMap.Web.Adapter.TiandituAdapter.transferPoint([point]);
                                 var marker = new TMarker(lonlats[0]);
                                 map.addOverLay(marker);
                             }else{

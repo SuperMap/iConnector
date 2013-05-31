@@ -1,0 +1,70 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9, IE=10">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>TransferSuperMapLine</title>
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/dojo/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
+    <style>
+        html, body, #map {
+            height:100%;
+            width:100%;
+            margin:0;
+            padding:0;
+        }
+        body {
+            height: 90%;
+            background-color:#FFF;
+            overflow:hidden;
+            font-family:"Trebuchet MS";
+        }
+    </style>
+    <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
+    <script src="../SuperMap.js"></script>
+    <script src="ArcGISAdapter.js"></script>
+    <script>
+        dojo.require("esri.map");
+        dojo.require("esri.layers.agstiled");
+        var map;
+        function Init() {
+            map = new esri.Map("map",{basemap: "streets",
+                center: [116.5, 39.5],
+                zoom: 6});
+        }
+        function addPoint()
+        {
+            var points = [
+                new SuperMap.Geometry.Point(116.5,41.5),
+                new SuperMap.Geometry.Point(115.5,38.5),
+                new SuperMap.Geometry.Point(118,40.5),
+                new SuperMap.Geometry.Point(115,40.5),
+                new SuperMap.Geometry.Point(118,38.5),
+                new SuperMap.Geometry.Point(116.5,41.5)
+            ];
+            var line = new SuperMap.Geometry.LineString(points);
+            var gLine = SuperMap.Web.Adapter.ArcGISAdapter.transferLine([line])[0];
+
+
+            var lineSymbol = new esri.symbol.CartographicLineSymbol(
+                    esri.symbol.CartographicLineSymbol.STYLE_SOLID,
+                    new dojo.Color([255,0,0]), 10,
+                    esri.symbol.CartographicLineSymbol.CAP_ROUND,
+                    esri.symbol.CartographicLineSymbol.JOIN_MITER, 5
+            );
+
+            var graphic = new esri.Graphic(gLine, lineSymbol);
+            map.graphics.clear();
+            map.graphics.add(graphic);
+        }
+
+        dojo.addOnLoad(Init);
+    </script>
+</head>
+
+<body class="claro" >
+<div id="map"></div>
+<input type="button" value="添加线" onclick="addPoint()" />
+</body>
+</html> 

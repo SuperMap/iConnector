@@ -1,0 +1,44 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9, IE=10">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>OverlyingChinaToArcGIS</title>
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/dojo/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
+    <style>
+      html, body, #map {
+        height:100%;
+        width:100%;
+        margin:0;
+        padding:0;
+      }
+      body {
+        background-color:#FFF;
+        overflow:hidden;
+        font-family:"Trebuchet MS";
+      }
+    </style>
+    <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
+      <script src="../SuperMap.js"></script>
+      <script src="ArcGISAdapter.js"></script>
+    <script>
+        dojo.require("esri.map");
+        var map;
+        function Init() {
+            var url = "http://localhost:8090/iserver/services/map-china400/rest/maps/China";
+            map = new esri.Map("map");
+            var layer = new esri.layers.ArcGISTiledMapServiceLayer("http://www.arcgisonline.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer");
+            map.addLayer(layer);
+            var layerChina = SuperMap.Web.Adapter.ArcGISAdapter.getLayer(url);
+            map.addLayer(layerChina);
+
+        }
+        dojo.addOnLoad(Init);
+    </script>
+  </head>
+  <body class="claro" >
+    <div id="map"></div>
+  </body>
+</html> 

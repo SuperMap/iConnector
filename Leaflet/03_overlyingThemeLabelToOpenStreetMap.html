@@ -1,0 +1,128 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>OverlyingThemeLabelToOpenStreetMap</title>
+    <link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
+    <script src="http://leafletjs.com/dist/leaflet.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="LeafletAdapter.js"></script>
+    <script type="text/javascript">
+        var map,url = "http://localhost:8090/iserver/services/map-world/rest/maps/World";
+        function init()
+        {
+            map = L.map('map').setView([51.505, -0.09], 1);
+            L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+                maxZoom: 18
+            }).addTo(map);
+
+        }
+        function addThemeLabel() {
+            var themeService = new SuperMap.REST.ThemeService(url, {eventListeners:{"processCompleted": themeCompleted, "processFailed": themeFailed}}),
+                    style1 = new SuperMap.REST.ServerTextStyle({
+                        fontHeight: 4,
+                        foreColor: new SuperMap.REST.ServerColor(100,20,50),
+                        sizeFixed: true,
+                        bold:true
+
+                    }),
+                    style2 = new SuperMap.REST.ServerTextStyle({
+                        fontHeight: 4,
+                        foreColor: new SuperMap.REST.ServerColor(250,0,0),
+                        sizeFixed: true,
+                        bold:true
+                    }),
+                    style3 = new SuperMap.REST.ServerTextStyle({
+                        fontHeight: 4,
+                        foreColor: new SuperMap.REST.ServerColor(93,95,255),
+                        sizeFixed: true,
+                        bold:true
+                    }),
+                    themeLabelIteme1 = new SuperMap.REST.ThemeLabelItem({
+                        start: 0.0,
+                        end: 7800000,
+                        style: style1
+                    }),
+                    themeLabelIteme2 = new SuperMap.REST.ThemeLabelItem({
+                        start: 7800000,
+                        end: 15000000,
+                        style: style2
+                    }),
+                    themeLabelIteme3 = new SuperMap.REST.ThemeLabelItem({
+                        start: 15000000,
+                        end:   30000000,
+                        style: style3
+                    }),
+
+                    themeLabelIteme4 = new SuperMap.REST.ThemeLabelItem({
+                        start: 0.0,
+                        end: 55,
+                        style: style1
+                    }),
+                    themeLabelIteme5 = new SuperMap.REST.ThemeLabelItem({
+                        start: 55,
+                        end: 109,
+                        style: style2
+                    }),
+                    themeLabelIteme6 = new SuperMap.REST.ThemeLabelItem({
+                        start: 109,
+                        end:   300,
+                        style: style3
+                    }),
+                    themeLabelOne = new SuperMap.REST.ThemeLabel({
+                        labelExpression: "CAPITAL",
+                        rangeExpression: "SMID",
+                        numericPrecision: 0,
+                        items: [themeLabelIteme4, themeLabelIteme5, themeLabelIteme6]
+                    }),
+                    themeLabelTwo = new SuperMap.REST.ThemeLabel({
+                        labelExpression: "CAP_POP",
+                        rangeExpression: "CAP_POP",
+                        numericPrecision: 0,
+                        items: [themeLabelIteme1, themeLabelIteme2, themeLabelIteme3]
+                    }),
+            //创建矩阵标签元素
+                    LabelThemeCellOne=new SuperMap.REST.LabelThemeCell({
+                        themeLabel: themeLabelOne
+                    }),
+                    LabelThemeCellTwo=new SuperMap.REST.LabelThemeCell({
+                        themeLabel: themeLabelTwo
+                    }),
+
+                    backStyle=new SuperMap.REST.ServerStyle({
+                        fillForeColor: new SuperMap.REST.ServerColor(255,255,0),
+                        fillOpaqueRate: 60,
+                        lineWidth: 0.1
+                    }),
+            //创建矩阵标签专题图
+                    themeLabel = new SuperMap.REST.ThemeLabel({
+                        matrixCells: [[LabelThemeCellOne],[LabelThemeCellTwo]],
+                        background:new SuperMap.REST.ThemeLabelBackground({
+                            backStyle: backStyle,
+                            labelBackShape:"RECT"
+                        })
+                    }),
+                    themeParameters = new SuperMap.REST.ThemeParameters({
+                        themes: [themeLabel],
+                        datasetNames: ["Capitals"],
+                        dataSourceNames: ["World"]
+                    });
+            themeService.processAsync(themeParameters);
+        }
+        function themeCompleted(themeEventArgs) {
+            if(themeEventArgs.result.resourceInfo.id) {
+                var canvasTiles =  SuperMap.Web.Adapter.LeafletAdapter.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
+                canvasTiles.addTo(map);
+            }
+        }
+        function themeFailed(serviceFailedEventArgs) {
+            alert(serviceFailedEventArgs.error.errorMsg);
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="map"  style="width: 1000px; height: 500px"></div>
+<input type="button" value="创建矩阵标签专题图" onclick="addThemeLabel()" />
+</body>
+</html>

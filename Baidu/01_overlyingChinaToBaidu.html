@@ -6,14 +6,14 @@
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=95a21d20cfe4df8d03f267282e62d8ae"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="../Adapter.js"></script>
+    <script type="text/javascript" src="BaiduAdapter.js"></script>
     <script type="text/javascript">
         function init(){
             var map = new BMap.Map('allmap');  //创建百度地图
             map.enableScrollWheelZoom(true);  //设置可以使用滚轮控制地图放大缩小
             map.centerAndZoom(new BMap.Point(0, 0), 1);   //定位
             //通过适配器接口初始化一个可以叠加到百度地图上的图层，叠加图层的投影系必须是3857的
-            var layer = SuperMap.Web.Adapter.getBaiduLayer(
+            var layer = SuperMap.Web.Adapter.BaiduAdapter.getLayer(
                     "http://localhost:8090/iserver/services/map-china400/rest/maps/China"
             );
             map.addTileLayer(layer);   //将地图添加到百度地图上

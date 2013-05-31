@@ -1,0 +1,83 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>OverlyingThemeRangeToGoogle</title>
+    <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
+    <script src="../SuperMap.js"></script>
+    <script src="GoogleAdapter.js"></script>
+    <script>
+        var map, url = "http://localhost:8090/iserver/services/map-china400/rest/maps/China";
+        function initialize() {
+            var myLatlng = new google.maps.LatLng(0, 0);
+            var mapOptions = {
+                center: myLatlng,
+                zoom: 1,
+                streetViewControl: true,
+                mapTypeId: google.maps.MapTypeId.ROADMAP
+            };
+            map = new google.maps.Map(document.getElementById('map-canvas'),
+                    mapOptions);
+        }
+        google.maps.event.addDomListener(window, 'load', initialize);
+        function addThemeRange() {
+            var themeService = new SuperMap.REST.ThemeService(url, {eventListeners:{"processCompleted": themeCompleted, "processFailed": themeFailed}}),
+                    style1 = new SuperMap.REST.ServerStyle({
+                        fillForeColor: new SuperMap.REST.ServerColor(137,203,187),
+                        lineColor: new SuperMap.REST.ServerColor(0,0,0),
+                        lineWidth: 0.1
+                    }),
+                    style2 = new SuperMap.REST.ServerStyle({
+                        fillForeColor: new SuperMap.REST.ServerColor(233,235,171),
+                        lineColor: new SuperMap.REST.ServerColor(0,0,0),
+                        lineWidth: 0.1
+                    }),
+                    style3 = new SuperMap.REST.ServerStyle({
+                        fillForeColor: new SuperMap.REST.ServerColor(135,157,157),
+                        lineColor: new SuperMap.REST.ServerColor(0,0,0),
+                        lineWidth: 0.1
+                    }),
+                    themeRangeIteme1 = new SuperMap.REST.ThemeRangeItem({
+                        start: 0,
+                        end: 500000000000,
+                        style: style1
+                    }),
+                    themeRangeIteme2 = new SuperMap.REST.ThemeRangeItem({
+                        start: 500000000000,
+                        end: 1000000000000,
+                        style: style2
+                    }),
+                    themeRangeIteme3 = new SuperMap.REST.ThemeRangeItem({
+                        start: 1000000000000,
+                        end:  3000000000000,
+                        style: style3
+                    }),
+                    themeRange = new SuperMap.REST.ThemeRange({
+                        rangeExpression: "SMAREA",
+                        rangeMode: SuperMap.REST.RangeMode.EQUALINTERVAL,
+                        items: [themeRangeIteme1,themeRangeIteme2,themeRangeIteme3]
+                    }),
+                    themeParameters = new SuperMap.REST.ThemeParameters({
+                        datasetNames: ["China_Province_R"],
+                        dataSourceNames: ["China400"],
+                        joinItems: null,
+                        themes: [themeRange]
+                    });
+
+            themeService.processAsync(themeParameters);
+        }
+        function themeCompleted(themeEventArgs) {
+            if(themeEventArgs.result.resourceInfo.id) {
+                map.overlayMapTypes.insertAt(
+                        0, SuperMap.Web.Adapter.GoogleAdapter.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id}));
+            }
+        }
+        function themeFailed(serviceFailedEventArgs) {
+            alert(serviceFailedEventArgs.error.errorMsg);
+        }
+    </script>
+</head>
+<body>
+<div id="map-canvas" style="width: 1000px;height: 500px"></div>
+<input type="button" value="创建分段专题图" onclick="addThemeRange()" />
+</body>
+</html>

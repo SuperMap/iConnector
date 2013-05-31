@@ -1,0 +1,55 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9, IE=10">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>TransferSuperMapPoint</title>
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/dojo/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
+    <style>
+        html, body, #map {
+            height:100%;
+            width:100%;
+            margin:0;
+            padding:0;
+        }
+        body {
+            height: 90%;
+            background-color:#FFF;
+            overflow:hidden;
+            font-family:"Trebuchet MS";
+        }
+    </style>
+    <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
+    <script src="../SuperMap.js"></script>
+    <script src="ArcGISAdapter.js"></script>
+    <script>
+        dojo.require("esri.map");
+        dojo.require("esri.layers.agstiled");
+        var map;
+        function Init() {
+            map = new esri.Map("map",{basemap: "streets",
+                center: [116.5, 39],
+                zoom: 3});
+            dojo.connect(map, "onLoad", addPoint);
+        }
+        function addPoint()
+        {
+            var point = new SuperMap.Geometry.Point(116.39148,39.90629);
+            var myPoint = SuperMap.Web.Adapter.ArcGISAdapter.transferPoint([point])[0];
+            var markerSymbol = new esri.symbol.SimpleMarkerSymbol();
+            markerSymbol.setPath("M16,4.938c-7.732,0-14,4.701-14,10.5c0,1.981,0.741,3.833,2.016,5.414L2,25.272l5.613-1.44c2.339,1.316,5.237,2.106,8.387,2.106c7.732,0,14-4.701,14-10.5S23.732,4.938,16,4.938zM16.868,21.375h-1.969v-1.889h1.969V21.375zM16.772,18.094h-1.777l-0.176-8.083h2.113L16.772,18.094z");
+            markerSymbol.setColor(new dojo.Color("#00FF00"));
+            markerSymbol.setSize(10);
+            var graphic = new esri.Graphic(myPoint, markerSymbol);
+            map.graphics.clear();
+            map.graphics.add(graphic);
+        }
+        dojo.addOnLoad(Init);
+    </script>
+</head>
+<body class="claro" >
+<div id="map"></div>
+</body>
+</html> 

@@ -9,7 +9,7 @@
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=95a21d20cfe4df8d03f267282e62d8ae"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="../Adapter.js"></script>
+    <script type="text/javascript" src="BaiduAdapter.js"></script>
     <title>GPS转百度</title>
 </head>
 <body>
@@ -18,13 +18,13 @@
 </html>
 <script type="text/javascript">
     //GPS坐标
-    var xx = 116.397428;
-    var yy = 39.90923;
+    var xx = 116.39724741188752;
+    var yy =   39.91334075825996;
     var gpsPoint = new BMap.Point(xx,yy);
 
     //地图初始化
     var bm = new BMap.Map("allmap");
-    bm.centerAndZoom(gpsPoint, 15);
+
     bm.addControl(new BMap.NavigationControl());
 
 
@@ -32,7 +32,7 @@
     bm.addOverlay(markergps); //添加GPS标注
     var labelgps = new BMap.Label("我是GPS标注哦",{offset:new BMap.Size(20,-10)});
     markergps.setLabel(labelgps); //添加GPS标注
-
+    bm.enableScrollWheelZoom();
     //坐标转换完之后的回调函数
     function callback(xyResults){
         for(var index in xyResults){
@@ -41,11 +41,12 @@
             bm.addOverlay(marker);
             var label = new BMap.Label("我是百度标注哦",{offset:new BMap.Size(20,-10)});
             marker.setLabel(label); //添加百度label
+            bm.centerAndZoom(point, 15);
         }
 
     }
 
     setTimeout(function(){
-        SuperMap.Web.Adapter.transferPointToBaidu([gpsPoint],new SuperMap.Projection("EPSG:4326"),callback);     //真实经纬度转成百度坐标
+        SuperMap.Web.Adapter.BaiduAdapter.transferPoint([gpsPoint],new SuperMap.Projection("EPSG:4326"),callback);     //真实经纬度转成百度坐标
     }, 2000);
 </script>

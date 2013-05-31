@@ -1,0 +1,37 @@
+﻿<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>TransferSuperMapLine</title>
+    <link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
+    <script src="http://leafletjs.com/dist/leaflet.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="LeafletAdapter.js"></script>
+    <script type="text/javascript">
+        function init()
+        {
+            var map = L.map('map').setView([40,116], 8);
+            L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
+                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
+                maxZoom: 18
+            }).addTo(map);
+
+            var points = [
+                new SuperMap.Geometry.Point(116.5,41.5),
+                new SuperMap.Geometry.Point(115.5,38.5),
+                new SuperMap.Geometry.Point(118,40.5),
+                new SuperMap.Geometry.Point(115,40.5),
+                new SuperMap.Geometry.Point(118,38.5),
+                new SuperMap.Geometry.Point(116.5,41.5)
+            ];
+            var line = new SuperMap.Geometry.LineString(points);
+            var gLine = SuperMap.Web.Adapter.LeafletAdapter.transferLine([line])[0];
+            gLine.addTo(map);
+            map.fitBounds(gLine.getBounds());
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="map"  style="width: 1000px; height: 600px"></div>
+</body>
+</html>
