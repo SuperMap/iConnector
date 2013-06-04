@@ -47,6 +47,6 @@
     }
 
     setTimeout(function(){
-        SuperMap.Web.Adapter.BaiduAdapter.transferPoint([gpsPoint],new SuperMap.Projection("EPSG:4326"),callback);     //真实经纬度转成百度坐标
+        SuperMap.Web.Adapter.BaiduAdapter.transferPoint([gpsPoint],new SuperMap.Projection("EPSG:4326"),callback,0);     //真实经纬度转成百度坐标
     }, 2000);
 </script>

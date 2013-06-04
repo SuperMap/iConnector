@@ -9,8 +9,8 @@
     <script src="GoogleAdapter.js"></script>
     <script>
         function initialize() {
-            var poi = {x:12957282.31163,y:4853357.17424};
-            var myLatlng = SuperMap.Web.Adapter.GoogleAdapter.transferPoint([poi],new SuperMap.Projection("EPSG:3857"))[0];
+            var poi = {x:116.32715863448607,y:39.990912172420714};
+            var myLatlng = SuperMap.Web.Adapter.GoogleAdapter.transferPoint([poi],new SuperMap.Projection("EPSG:4326"))[0];
             var mapOptions = {
                 zoom: 14,
                 center: myLatlng,

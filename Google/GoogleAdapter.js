@@ -155,7 +155,8 @@ SuperMap.Web.Adapter.GoogleAdapter.transferPoint = function(array,projection){
                 smPoint =  SuperMap.Projection.transform(new SuperMap.Geometry.Point(array[i].lng(),array[i].lat()),projection,new SuperMap.Projection("EPSG:4326"));
 
             }
-            var point = new google.maps.LatLng(smPoint.y,smPoint.x);
+            var traPoint = SuperMap.Web.Adapter.GoogleAdapter.transfer(smPoint.x,smPoint.y);
+            var point = new google.maps.LatLng(traPoint.lat,traPoint.lng);
             points.push(point);
         }
         return points;
@@ -256,4 +257,20 @@ SuperMap.Web.Adapter.GoogleAdapter.transferPolygon = function(array,projection){
         }
         return polygons;
     }
+}
+/**
+ * APIMethod:
+ * 数据纠偏方法，未实现。
+ * 由于底图和数据都存在标准和偏移的情况，当用户的底图和数据都是标准或者偏移的，那不需要实现此方法，如果不一致需要用户实现两者之间的转换
+ * 当用户需要纠偏时，则需要覆盖此方法，内部每次转换前会调用此方法，将待转换的经度坐标和纬度坐标传进来，通过用户的方式实现纠偏后按照形如
+ * {lng:116.4,lat:39.4}的格式返回即可
+ * 比如用户的地图为中国范围的Google地图（是做了偏移的），如果没有买Google的纠偏数据，用自己的真实数据叠加上去就会出现位置错误，
+ * 此时就需要实现此方法，将每一个坐标进行纠偏
+ *
+ * @param lng {Number} 需要纠偏的经度坐标
+ * @param lat {Number} 需要纠偏的纬度坐标
+ * @returns {Object} 返回一个Object对象，如：{lng:116.4,lat:39.4}
+ */
+SuperMap.Web.Adapter.GoogleAdapter.transfer = function(lng,lat){
+    return {lng:lng,lat:lat};
 }

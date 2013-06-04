@@ -63,6 +63,6 @@
     }
 
     setTimeout(function(){
-        SuperMap.Web.Adapter.BaiduAdapter.transferPoint(points,new SuperMap.Projection("EPSG:4326"),acallback);        //一秒之后开始进行坐标转换。参数2，表示是从GCJ-02坐标到百度坐标。参数0，表示是从GPS到百度坐标
+        SuperMap.Web.Adapter.BaiduAdapter.transferPoint(points,new SuperMap.Projection("EPSG:4326"),acallback,2);        //一秒之后开始进行坐标转换。参数2，表示是从GCJ-02坐标到百度坐标。参数0，表示是从GPS到百度坐标
     }, 1000);
 </script>
