@@ -7,7 +7,7 @@
     <script type="text/javascript" src="../SuperMap.js"></script>
     <script type="text/javascript" src="TiandituAdapter.js"></script>
     <script type="text/javascript">
-        var map,url = "http://localhost:8090/iserver/services/map-world/rest/maps/World";
+        var map,url = "http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
         function init()
         {
             map = new TMap("mapDiv",{projection: "EPSG:4326"});
@@ -62,6 +62,5 @@
               <input type="button" onclick="EPSG3857()" value="转换为EPSG：3857" />
               <input type="button" onclick="EPSG4326()" value="转换为EPSG：4326" />
           </div>
-
 </body>
 </html>

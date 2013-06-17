@@ -7,7 +7,9 @@
     <script type="text/javascript" src="../SuperMap.js"></script>
     <script type="text/javascript" src="TiandituAdapter.js"></script>
     <script type="text/javascript">
-        var map,url="http://localhost:8090/iserver/services/map-world/rest/maps/World";
+        //http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World
+        //http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China
+        var map,url="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
         function init()
         {
             map = new TMap("mapDiv",{projection: "EPSG:900913"});
@@ -32,6 +34,5 @@
           <input type="button" onclick="transferToEPSG4326()" value="转换为EPSG：4326" >
 </body>
 </html>
-//http://localhost:8090/iserver/services/map-world/rest/maps/World
-//http://localhost:8090/iserver/services/map-china400/rest/maps/China
+
 

@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="TiandituAdapter.js"></script>
+    <script type="text/javascript">
+        var map,urlBuffer="http://support.supermap.com.cn:8090/iserver/services/spatialanalyst-changchun/restjsr/spatialanalyst",
+        urlQuery="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
+        var bufferResultGeometry;
+        function init()
+        {
+            map=new TMap("mapDiv",{projection:"EPSG:900913"})
+            map.centerAndZoom(new TLngLat(116.40969,39.89945),1);
+            map.enableHandleMouseScroll();
+        }
+        function drawLine()
+        {
+            var config = {
+                strokeColor:"blue", //折线颜色
+                strokeWeight:"5px", //折线的宽度，以像素为单位
+                strokeOpacity:0.8,  //折线的透明度，取值范围0 - 1
+                strokeStyle:"solid",    //折线的样式，solid或dashed
+                showLabel:false
+            };
+            polylineTool = new TPolylineTool(map,config);
+            TEvent.bind(polylineTool,"draw",map,onDrawLine);
+            polylineTool.open();
+        }
+        function onDrawLine(bounds,line)
+        {
+            polylineTool.close();
+            var points = [];
+            for(var i = 0;i<bounds.length;i++)
+            {
+                points.push(new SuperMap.Geometry.Point(bounds[i].getLng(),bounds[i].getLat()));
+            }
+            var polyLine=new SuperMap.Geometry.LineString(points);
+            var bufferServiceByGeometry = new SuperMap.REST.BufferAnalystService(urlBuffer),
+                    bufferDistance = new SuperMap.REST.BufferDistance({
+                        value: 4
+                    }),
+                    bufferSetting = new SuperMap.REST.BufferSetting({
+                        endType: SuperMap.REST.BufferEndType.ROUND,
+                        leftDistance: bufferDistance,
+                        rightDistance: bufferDistance,
+                        semicircleLineSegment: 10
+                    }),
+                    geoBufferAnalystParam = new SuperMap.REST.GeometryBufferAnalystParameters({
+                        sourceGeometry: polyLine,
+                        bufferSetting: bufferSetting
+                    });
+
+            bufferServiceByGeometry.events.on(
+                    {
+                        "processCompleted": bufferAnalystCompleted
+                    });
+            bufferServiceByGeometry.processAsync(geoBufferAnalystParam);
+
+        }
+        function bufferAnalystCompleted(BufferAnalystEventArgs)
+        {
+
+            bufferResultGeometry = BufferAnalystEventArgs.result.resultGeometry;
+            var regions = SuperMap.Web.Adapter.TiandituAdapter.transferPolygon([bufferResultGeometry],new SuperMap.Projection("EPSG:4326"));
+
+            map.addOverLay(regions[0]);
+        }
+        function bufferQuery()
+        {
+            var queryParam, queryByGeometryParameters, queryService;
+            queryParam = new SuperMap.REST.FilterParameter({name: "Capitals@World.1"});
+            queryByGeometryParameters = new SuperMap.REST.QueryByGeometryParameters({
+                queryParams: [queryParam],
+                geometry:  bufferResultGeometry,
+                spatialQueryMode: SuperMap.REST.SpatialQueryMode.INTERSECT
+            });
+            queryService = new SuperMap.REST.QueryByGeometryService(urlQuery, {
+                eventListeners: {
+                    "processCompleted": bufferQueryCompleted,
+                    "processFailed": bufferQueryFailed
+                }
+            });
+            queryService.processAsync(queryByGeometryParameters);
+        }
+        function bufferQueryCompleted(queryEventArgs) {
+
+            var i, j, result = queryEventArgs.result,title;
+            if (result && result.recordsets) {
+                for (i=0, recordsets=result.recordsets, len=recordsets.length; i<len; i++) {
+                    if (recordsets[i].features) {
+                        for (j=0; j<recordsets[i].features.length; j++) {
+                            var feature = recordsets[i].features[j];
+                            var point = feature.geometry;
+                                title=feature.attributes["CAPITAL"];
+                            if(point.CLASS_NAME == SuperMap.Geometry.Point.prototype.CLASS_NAME){
+                                //这里其实没必要转换，本身就是4326坐标系
+                                var lonlats = SuperMap.Web.Adapter.TiandituAdapter.transferPoint([point]);
+                                var marker = new TMarker(lonlats[0]);
+                                marker.setTitle(title);
+                                map.addOverLay(marker);
+                            }else{
+                        }
+                    }
+                }
+            }
+        }
+        }
+        function bufferQueryFailed(e) {
+            alert(e.error.errorMsg);
+        }
+        function deleteAll()
+        {
+            bufferResultGeometry=null;
+            map.clearOverLays();
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="mapDiv" style="width: 1000px;height: 700px"></div>
+<div>
+    <input type="button" onclick="drawLine()" value="线缓冲区">
+    <input type="button" onclick="bufferQuery()" value="缓冲区查询">
+    <input type="button" onclick="deleteAll()" value="清除">
+
+</div>
+
+</body>
+</html>

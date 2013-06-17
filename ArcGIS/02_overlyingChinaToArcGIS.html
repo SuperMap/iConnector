@@ -27,7 +27,7 @@
         dojo.require("esri.map");
         var map;
         function Init() {
-            var url = "http://localhost:8090/iserver/services/map-china400/rest/maps/China";
+            var url = "http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China";
             map = new esri.Map("map");
             var layer = new esri.layers.ArcGISTiledMapServiceLayer("http://www.arcgisonline.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer");
             map.addLayer(layer);

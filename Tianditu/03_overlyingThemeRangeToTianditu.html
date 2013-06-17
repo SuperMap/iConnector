@@ -1,0 +1,89 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="TiandituAdapter.js"></script>
+    <script type="text/javascript">
+        var map,url="http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China"
+        function init()
+        {
+            map=new TMap("mapDiv",{projection:"EPSG:4326"})
+            map.centerAndZoom(new TLngLat(116.40969,39.89945),1);
+            map.enableHandleMouseScroll();
+        }
+        function themeRange()
+        {
+            var themeService = new SuperMap.REST.ThemeService(url, {eventListeners:{"processCompleted": themeCompleted, "processFailed": themeFailed}}),
+                style1 = new SuperMap.REST.ServerStyle({
+                    fillForeColor: new SuperMap.REST.ServerColor(137,203,187),
+                    lineColor: new SuperMap.REST.ServerColor(0,0,0),
+                    lineWidth: 0.1
+                }),
+                style2 = new SuperMap.REST.ServerStyle({
+                    fillForeColor: new SuperMap.REST.ServerColor(233,235,171),
+                    lineColor: new SuperMap.REST.ServerColor(0,0,0),
+                    lineWidth: 0.1
+                }),
+                style3 = new SuperMap.REST.ServerStyle({
+                    fillForeColor: new SuperMap.REST.ServerColor(135,157,157),
+                    lineColor: new SuperMap.REST.ServerColor(0,0,0),
+                    lineWidth: 0.1
+                }),
+                themeRangeIteme1 = new SuperMap.REST.ThemeRangeItem({
+                    start: 0,
+                    end: 500000000000,
+                    style: style1
+                }),
+                themeRangeIteme2 = new SuperMap.REST.ThemeRangeItem({
+                    start: 500000000000,
+                    end: 1000000000000,
+                    style: style2
+                }),
+                themeRangeIteme3 = new SuperMap.REST.ThemeRangeItem({
+                    start: 1000000000000,
+                    end:  3000000000000,
+                    style: style3
+                }),
+                themeRange = new SuperMap.REST.ThemeRange({
+                    rangeExpression: "SMAREA",
+                    rangeMode: SuperMap.REST.RangeMode.EQUALINTERVAL,
+                    items: [themeRangeIteme1,themeRangeIteme2,themeRangeIteme3]
+                }),
+                themeParameters = new SuperMap.REST.ThemeParameters({
+                    datasetNames: ["China_Province_R"],
+                    dataSourceNames: ["China400"],
+                    joinItems: null,
+                    themes: [themeRange]
+                });
+
+        themeService.processAsync(themeParameters);
+        }
+
+        function themeCompleted(themeEventArgs) {
+            if(themeEventArgs.result.resourceInfo.id) {
+                var layer = SuperMap.Web.Adapter.TiandituAdapter.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
+                map.addLayer(layer);
+            }
+        }
+
+            function themeFailed(serviceFailedEventArgs) {
+                alert(serviceFailedEventArgs.error.errorMsg);
+            }
+
+
+
+
+    </script>
+</head>
+<body onload="init()">
+<div id="mapDiv" style="width: 1000px;height: 700px"></div>
+<div >
+    <input type="button" onclick="themeRange()" value="添加分段专题图">
+</div>
+
+
+
+</body>
+</html>

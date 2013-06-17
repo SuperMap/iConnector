@@ -16,11 +16,18 @@ SuperMap.Web.Adapter 是一款基于SuperMap iClient 6R(2012) for JavaScript 和
 ### 三、使用说明
 
 提供了针对百度、天地图、Google、Leaflet和ArcGIS的不同接口，详见：
+
 1、Adapter for Baidu help.docx
+
 2、Adapter for Tianditu help.docx
+
 3、Adapter for Google help.docx
+
 4、Adapter for Leaflet help.docx
+
 5、Adapter for ArcGIS help.docx
+
+由于范例访问的服务器非本地服务器，所以可以直接运行范例，范例中使用的服务器仅支持范例使用。
 
 ### 四、许可授权
 
