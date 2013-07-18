@@ -5,7 +5,7 @@
     <title></title>
     <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="TiandituAdapter.js"></script>
+    <script type="text/javascript" src="iConnectorTianditu.js"></script>
     <script type="text/javascript">
         var map,polygonTool,url="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
         function init()
@@ -59,7 +59,7 @@
                             }
 
                             var line =new SuperMap.Geometry.LineString(gpsPoints);
-                            var polylines = SuperMap.Web.Adapter.TiandituAdapter.transferLine([line],new SuperMap.Projection("EPSG:4326"));
+                            var polylines = SuperMap.Web.iConnector.Tianditu.transferLine([line],new SuperMap.Projection("EPSG:4326"));
                             map.addOverLay(polylines[0]);
                         }
                     }

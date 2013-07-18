@@ -6,13 +6,13 @@
     <link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
     <script src="http://leafletjs.com/dist/leaflet.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="LeafletAdapter.js"></script>
+    <script type="text/javascript" src="iConnectorLeaflet.js"></script>
     <script type="text/javascript">
         var map,url = "http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China";
         function init()
         {
             map = L.map('map').setView([51.505, -0.09], 1);
-            var canvasTiles =  SuperMap.Web.Adapter.LeafletAdapter.getLayer(url);
+            var canvasTiles =  SuperMap.Web.iConnector.Leaflet.getLayer(url);
             canvasTiles.addTo(map);
         }
     </script>

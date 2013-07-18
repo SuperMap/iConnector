@@ -10,7 +10,7 @@
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=95a21d20cfe4df8d03f267282e62d8ae"></script>
 
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="BaiduAdapter.js"></script>
+    <script type="text/javascript" src="iConnectorBaidu.js"></script>
     <title>转换多个SuperMap点</title>
 </head>
 <body>
@@ -64,7 +64,7 @@
                             k = k+5;
                             break;
                         }
-                        SuperMap.Web.Adapter.BaiduAdapter.transferPoint(gpsPoints,new SuperMap.Projection("EPSG:4326"),translateCallback);
+                        SuperMap.Web.iConnector.Baidu.transferPoint(gpsPoints,new SuperMap.Projection("EPSG:4326"),translateCallback);
                     }
                 }
             }

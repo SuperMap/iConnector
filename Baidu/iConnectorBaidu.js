@@ -11,17 +11,17 @@ if(SuperMap.Web == undefined )
 {
     SuperMap.Web = new Object();
 }
-//判定一下是否存在了SuperMap.Web.Adapter，如果没有则初始化一个
-if(SuperMap.Web.Adapter == undefined )
+//判定一下是否存在了SuperMap.Web.iConnector，如果没有则初始化一个
+if(SuperMap.Web.iConnector == undefined )
 {
-    SuperMap.Web.Adapter = new Object();
+    SuperMap.Web.iConnector = new Object();
 }
 /**
  * Class:
  * 百度适配器类
  * @constructor
  */
-SuperMap.Web.Adapter.BaiduAdapter = function(){
+SuperMap.Web.iConnector.Baidu = function(){
 
 }
 
@@ -31,7 +31,7 @@ SuperMap.Web.Adapter.BaiduAdapter = function(){
  * @param xyUrl 请求地址
  * @param callback 回调函数
  */
-SuperMap.Web.Adapter.BaiduAdapter.load_script = function(xyUrl, callback){
+SuperMap.Web.iConnector.Baidu.load_script = function(xyUrl, callback){
     var head = document.getElementsByTagName('head')[0];
     var script = document.createElement('script');
     script.type = 'text/javascript';
@@ -55,7 +55,7 @@ SuperMap.Web.Adapter.BaiduAdapter.load_script = function(xyUrl, callback){
  * 记录向百度服务器点坐标转换请求次数，用于服务器处理完成后定位回调函数
  * @type {number} 每请求一次服务器，会自动累加
  */
-SuperMap.Web.Adapter.BaiduAdapter.eventsCounts = 0;
+SuperMap.Web.iConnector.Baidu.eventsCounts = 0;
 /**
  * Method:
  * 向百度服务器发送坐标转换请求，一次性最多支持20个点（百度服务器限制的）
@@ -63,22 +63,22 @@ SuperMap.Web.Adapter.BaiduAdapter.eventsCounts = 0;
  * @param type  {Number} 0代表GPS坐标转百度坐标；2代表google坐标转百度坐标
  * @param id 唯一标示第几批点数组，对应了
  */
-SuperMap.Web.Adapter.BaiduAdapter.transMore = function(points,type,id){
+SuperMap.Web.iConnector.Baidu.transMore = function(points,type,id){
     var xyUrl = "http://api.map.baidu.com/ag/coord/convert?from=" + type + "&to=4&mode=1";
     var xs = [];
     var ys = [];
     var maxCnt = 20;//每次发送的最大个数，百度服务器一次性最多支持20个点的转换
     var send = function(){
         //一直累加，保证每一次请求后回调函数方便定位
-        SuperMap.Web.Adapter.BaiduAdapter.eventsCounts++;
-        var url = xyUrl + "&x=" + xs.join(",") + "&y=" + ys.join(",") + "&callback=window.SuperMap.Web.Adapter.BaiduAdapter.callbackFunction" + SuperMap.Web.Adapter.BaiduAdapter.eventsCounts;
-        //这里的SuperMap.Web.Adapter.BaiduAdapter.eventsCounts肯定每一次都在累加，不一样，但是id可能会一样，点数据分20个的转换，可能会出现一个点数组里面超过20
+        SuperMap.Web.iConnector.Baidu.eventsCounts++;
+        var url = xyUrl + "&x=" + xs.join(",") + "&y=" + ys.join(",") + "&callback=window.SuperMap.Web.iConnector.Baidu.callbackFunction" + SuperMap.Web.iConnector.Baidu.eventsCounts;
+        //这里的SuperMap.Web.iConnector.Baidu.eventsCounts肯定每一次都在累加，不一样，但是id可能会一样，点数据分20个的转换，可能会出现一个点数组里面超过20
         //个点，那么就必须分批转换，同属于一个点数组，这样id就会一样，方便他们全部转换完成后组合到一起
-        var str = "window.SuperMap.Web.Adapter.BaiduAdapter.callbackFunction" +SuperMap.Web.Adapter.BaiduAdapter.eventsCounts + "=function(points){SuperMap.Web.Adapter.BaiduAdapter.circulatePointSend(points," + type+"," + id+ "); }";
+        var str = "window.SuperMap.Web.iConnector.Baidu.callbackFunction" +SuperMap.Web.iConnector.Baidu.eventsCounts + "=function(points){SuperMap.Web.iConnector.Baidu.circulatePointSend(points," + type+"," + id+ "); }";
         //动态创建回调函数
         eval(str);
         //动态创建script标签
-        SuperMap.Web.Adapter.BaiduAdapter.load_script(url);
+        SuperMap.Web.iConnector.Baidu.load_script(url);
         xs = [];
         ys = [];
     }
@@ -104,7 +104,7 @@ SuperMap.Web.Adapter.BaiduAdapter.transMore = function(points,type,id){
  * layersID - {String} 设置临时图层的id，一般用于专题图的叠加使用
  * @returns {BMap.TileLayer} 返回百度的BMap.TileLayer对象
  */
-SuperMap.Web.Adapter.BaiduAdapter.getLayer = function(url,options){
+SuperMap.Web.iConnector.Baidu.getLayer = function(url,options){
     if(url == undefined)
     {
         return;
@@ -191,7 +191,7 @@ SuperMap.Web.Adapter.BaiduAdapter.getLayer = function(url,options){
  * @param callback {Function} 所绑定的回调函数  （回调函数会以数组形式返回转换后的点数组）
  * @param type {Number} 首先数据会在内部转换为4326坐标系，当为0时代表数据是标准GPS坐标转向百度坐标，当为2时代表数据是根据国家测绘局规定进行了统一偏移的数据（中国范围内的google数据就是其中之一）转向百度坐标，默认为0.
  */
-SuperMap.Web.Adapter.BaiduAdapter.transferPoint = function(array,projection,callback,type){
+SuperMap.Web.iConnector.Baidu.transferPoint = function(array,projection,callback,type){
 
     if((typeof array) == "object" && array != null && array.constructor == Array)
     {
@@ -224,14 +224,14 @@ SuperMap.Web.Adapter.BaiduAdapter.transferPoint = function(array,projection,call
             var point = new BMap.Point(smPoint.x,smPoint.y);
             points.push(point);
         }
-        SuperMap.Web.Adapter.BaiduAdapter.callbackPointEventCounts++;
-        SuperMap.Web.Adapter.BaiduAdapter.callbackPointEvent[SuperMap.Web.Adapter.BaiduAdapter.callbackPointEventCounts]=callback;
+        SuperMap.Web.iConnector.Baidu.callbackPointEventCounts++;
+        SuperMap.Web.iConnector.Baidu.callbackPointEvent[SuperMap.Web.iConnector.Baidu.callbackPointEventCounts]=callback;
         //初始转换前的点数组
-        SuperMap.Web.Adapter.BaiduAdapter.startPointArray[SuperMap.Web.Adapter.BaiduAdapter.callbackPointEventCounts] = points;
+        SuperMap.Web.iConnector.Baidu.startPointArray[SuperMap.Web.iConnector.Baidu.callbackPointEventCounts] = points;
         //清空转换后点的数组
-        SuperMap.Web.Adapter.BaiduAdapter.endPointArray[SuperMap.Web.Adapter.BaiduAdapter.callbackPointEventCounts] = [];
+        SuperMap.Web.iConnector.Baidu.endPointArray[SuperMap.Web.iConnector.Baidu.callbackPointEventCounts] = [];
         //开始转换
-        SuperMap.Web.Adapter.BaiduAdapter.circulatePointSend(null,type,SuperMap.Web.Adapter.BaiduAdapter.callbackPointEventCounts);
+        SuperMap.Web.iConnector.Baidu.circulatePointSend(null,type,SuperMap.Web.iConnector.Baidu.callbackPointEventCounts);
     }
 }
 
@@ -251,7 +251,7 @@ SuperMap.Web.Adapter.BaiduAdapter.transferPoint = function(array,projection,call
  * @param callback {Function} 所绑定的回调函数（回调函数会以数组形式返回转换后的线数组）
  * @param type {Number} 首先数据会在内部转换为4326坐标系，当为0时代表数据是标准GPS坐标转向百度坐标，当为2时代表数据是根据国家测绘局规定进行了统一偏移的数据（中国范围内的google数据就是其中之一）转向百度坐标，默认为0.
  */
-SuperMap.Web.Adapter.BaiduAdapter.transferLine = function(array,projection,callback,type){
+SuperMap.Web.iConnector.Baidu.transferLine = function(array,projection,callback,type){
     if((typeof array) == "object" && array != null && array.constructor == Array)
     {
         type = type || 0;
@@ -281,13 +281,13 @@ SuperMap.Web.Adapter.BaiduAdapter.transferLine = function(array,projection,callb
             }
             lines.push(pointsEnd);
         }
-        SuperMap.Web.Adapter.BaiduAdapter.callbackLineEventCounts++;
-        SuperMap.Web.Adapter.BaiduAdapter.callbackLineEvent[SuperMap.Web.Adapter.BaiduAdapter.callbackLineEventCounts]=callback;
+        SuperMap.Web.iConnector.Baidu.callbackLineEventCounts++;
+        SuperMap.Web.iConnector.Baidu.callbackLineEvent[SuperMap.Web.iConnector.Baidu.callbackLineEventCounts]=callback;
         //初始转换前的
-        SuperMap.Web.Adapter.BaiduAdapter.startLineArray[SuperMap.Web.Adapter.BaiduAdapter.callbackLineEventCounts] = lines;
+        SuperMap.Web.iConnector.Baidu.startLineArray[SuperMap.Web.iConnector.Baidu.callbackLineEventCounts] = lines;
         //清空转换后
-        SuperMap.Web.Adapter.BaiduAdapter.endLineArray[SuperMap.Web.Adapter.BaiduAdapter.callbackLineEventCounts] = [];
-        SuperMap.Web.Adapter.BaiduAdapter.circulateLineSend(null,type,SuperMap.Web.Adapter.BaiduAdapter.callbackLineEventCounts);
+        SuperMap.Web.iConnector.Baidu.endLineArray[SuperMap.Web.iConnector.Baidu.callbackLineEventCounts] = [];
+        SuperMap.Web.iConnector.Baidu.circulateLineSend(null,type,SuperMap.Web.iConnector.Baidu.callbackLineEventCounts);
     }
 }
 
@@ -314,7 +314,7 @@ SuperMap.Web.Adapter.BaiduAdapter.transferLine = function(array,projection,callb
  * @param callback {Function} 所绑定的回调函数（回调函数会以数组形式返回转换后的面数组）
  * @param type {Number} 首先数据会在内部转换为4326坐标系，当为0时代表数据是标准GPS坐标转向百度坐标，当为2时代表数据是根据国家测绘局规定进行了统一偏移的数据（中国范围内的google数据就是其中之一）转向百度坐标，默认为0.
  */
-SuperMap.Web.Adapter.BaiduAdapter.transferPolygon = function(array,projection,callback,type){
+SuperMap.Web.iConnector.Baidu.transferPolygon = function(array,projection,callback,type){
     if((typeof array) == "object" && array != null && array.constructor == Array)
     {
         type = type || 0;
@@ -344,13 +344,13 @@ SuperMap.Web.Adapter.BaiduAdapter.transferPolygon = function(array,projection,ca
             }
             polygons.push(pointsEnd);
         }
-        SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEventCounts++;
-        SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEvent[SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEventCounts]=callback;
+        SuperMap.Web.iConnector.Baidu.callbackPolygonEventCounts++;
+        SuperMap.Web.iConnector.Baidu.callbackPolygonEvent[SuperMap.Web.iConnector.Baidu.callbackPolygonEventCounts]=callback;
         //初始转换前的
-        SuperMap.Web.Adapter.BaiduAdapter.startPolygonArray[SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEventCounts] = polygons;
+        SuperMap.Web.iConnector.Baidu.startPolygonArray[SuperMap.Web.iConnector.Baidu.callbackPolygonEventCounts] = polygons;
         //清空转换后
-        SuperMap.Web.Adapter.BaiduAdapter.endPolygonArray[SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEventCounts] = [];
-        SuperMap.Web.Adapter.BaiduAdapter.circulatePolygonSend(null,type,SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEventCounts);
+        SuperMap.Web.iConnector.Baidu.endPolygonArray[SuperMap.Web.iConnector.Baidu.callbackPolygonEventCounts] = [];
+        SuperMap.Web.iConnector.Baidu.circulatePolygonSend(null,type,SuperMap.Web.iConnector.Baidu.callbackPolygonEventCounts);
     }
 }
 
@@ -360,26 +360,26 @@ SuperMap.Web.Adapter.BaiduAdapter.transferPolygon = function(array,projection,ca
  * @type {Array}  BMap.Point数组的数组
  * 首先本身是一个数组，每一个数据代表某一批点数组，每批点数组又是多个点组成的
  */
-SuperMap.Web.Adapter.BaiduAdapter.startPointArray = [];
+SuperMap.Web.iConnector.Baidu.startPointArray = [];
 /**
  * Property:
  * 记录转成后的点数组的数组
  * @type {Array}   BMap.Point数组的数组
  * 首先本身是一个数组，每一个数据代表某一批点数组，每批点数组又是多个点组成的
  */
-SuperMap.Web.Adapter.BaiduAdapter.endPointArray = [];
+SuperMap.Web.iConnector.Baidu.endPointArray = [];
 /**
  * Property:
  * 记录用户注册的点回调函数数组
  * @type {Array} 回调函数数组
  */
-SuperMap.Web.Adapter.BaiduAdapter.callbackPointEvent = [];
+SuperMap.Web.iConnector.Baidu.callbackPointEvent = [];
 /**
  * Property:
  * 记录当前为第多少批点数组需要进行转换
  * @type {number} 默认为-1，每有一批点数组需要转换就自加1
  */
-SuperMap.Web.Adapter.BaiduAdapter.callbackPointEventCounts = -1;
+SuperMap.Web.iConnector.Baidu.callbackPointEventCounts = -1;
 /**
  * Method:
  * 每次服务器转换完点后的回调函数，在此判定是否将所有点全部转换，如果没有则继续转换
@@ -387,7 +387,7 @@ SuperMap.Web.Adapter.BaiduAdapter.callbackPointEventCounts = -1;
  * @param id 代表此次转换完的点是属于第id批的点数组，避免回调函数出错
  * @param type {Number} 首先数据会在内部转换为4326坐标系，当为0时代表数据是标准GPS坐标转向百度坐标，当为2时代表数据是根据国家测绘局规定进行了统一偏移的数据（中国范围内的google数据就是其中之一）转向百度坐标，默认为0.
  */
-SuperMap.Web.Adapter.BaiduAdapter.circulatePointSend = function(xyResults,type,id){
+SuperMap.Web.iConnector.Baidu.circulatePointSend = function(xyResults,type,id){
 
     if(xyResults !=null)
     {
@@ -395,27 +395,27 @@ SuperMap.Web.Adapter.BaiduAdapter.circulatePointSend = function(xyResults,type,i
             xyResult = xyResults[index];
             if(xyResult.error != 0){continue;}//出错就直接返回;
             var resultPoint = new BMap.Point(xyResult.x, xyResult.y);
-            SuperMap.Web.Adapter.BaiduAdapter.endPointArray[id].push(resultPoint);
+            SuperMap.Web.iConnector.Baidu.endPointArray[id].push(resultPoint);
         }
     }
 
     //如果点已经全部转换，则直接将所有点传递给外部用户，否则继续转换
-    if(SuperMap.Web.Adapter.BaiduAdapter.startPointArray[id].length == 0)
+    if(SuperMap.Web.iConnector.Baidu.startPointArray[id].length == 0)
     {
-        SuperMap.Web.Adapter.BaiduAdapter.callbackPointEvent[id](SuperMap.Web.Adapter.BaiduAdapter.endPointArray[id],type,id);
+        SuperMap.Web.iConnector.Baidu.callbackPointEvent[id](SuperMap.Web.iConnector.Baidu.endPointArray[id],type,id);
     }
     else
     {
         var pots = [];
-        if(SuperMap.Web.Adapter.BaiduAdapter.startPointArray[id].length>20)
+        if(SuperMap.Web.iConnector.Baidu.startPointArray[id].length>20)
         {
-            pots = SuperMap.Web.Adapter.BaiduAdapter.startPointArray[id].splice(0,20);
+            pots = SuperMap.Web.iConnector.Baidu.startPointArray[id].splice(0,20);
         }
         else
         {
-            pots = SuperMap.Web.Adapter.BaiduAdapter.startPointArray[id].splice(0,SuperMap.Web.Adapter.BaiduAdapter.startPointArray[id].length);
+            pots = SuperMap.Web.iConnector.Baidu.startPointArray[id].splice(0,SuperMap.Web.iConnector.Baidu.startPointArray[id].length);
         }
-        SuperMap.Web.Adapter.BaiduAdapter.transMore(pots,type,id);
+        SuperMap.Web.iConnector.Baidu.transMore(pots,type,id);
     }
 
 }
@@ -425,26 +425,26 @@ SuperMap.Web.Adapter.BaiduAdapter.circulatePointSend = function(xyResults,type,i
  * @type {Array} 线数组的数组
  * 首先本身是一个数组，每一个数据代表某一批线数组，每批线数组又是多条线组成的，每一条线其实又是点数组
  */
-SuperMap.Web.Adapter.BaiduAdapter.startLineArray = [];
+SuperMap.Web.iConnector.Baidu.startLineArray = [];
 /**
  * Property:
  * 记录转换后的线数组的数组
  * @type {Array}  BMap.Polyline数组的数组
  * 首先本身是一个数组，每一个数据代表某一批BMap.Polyline线数组，每批线数组又是多条BMap.Polyline线组成的
  */
-SuperMap.Web.Adapter.BaiduAdapter.endLineArray = [];
+SuperMap.Web.iConnector.Baidu.endLineArray = [];
 /**
  * Property:
  * 记录用户注册的线回调函数数组
  * @type {Array} 回调函数数组
  */
-SuperMap.Web.Adapter.BaiduAdapter.callbackLineEvent = [];
+SuperMap.Web.iConnector.Baidu.callbackLineEvent = [];
 /**
  * Property:
  *  记录当前为第多少批线数组需要进行转换
  * @type {number}  默认为-1，每有一批线数组需要转换就自加1
  */
-SuperMap.Web.Adapter.BaiduAdapter.callbackLineEventCounts = -1;
+SuperMap.Web.iConnector.Baidu.callbackLineEventCounts = -1;
 /**
  * Method:
  * 每次服务器转换完线后的回调函数，在此判定是否将所有线全部转换，如果没有则继续转换
@@ -452,20 +452,20 @@ SuperMap.Web.Adapter.BaiduAdapter.callbackLineEventCounts = -1;
  * @param id 代表此次转换完的线是属于第id批的线数组，避免回调函数出错
  * @param type {Number} 首先数据会在内部转换为4326坐标系，当为0时代表数据是标准GPS坐标转向百度坐标，当为2时代表数据是根据国家测绘局规定进行了统一偏移的数据（中国范围内的google数据就是其中之一）转向百度坐标，默认为0.
  */
-SuperMap.Web.Adapter.BaiduAdapter.circulateLineSend = function(points,type,id){
+SuperMap.Web.iConnector.Baidu.circulateLineSend = function(points,type,id){
     if(points !=null)
     {
         var line =new BMap.Polyline(points, {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5});
-        SuperMap.Web.Adapter.BaiduAdapter.endLineArray[id].push(line);
+        SuperMap.Web.iConnector.Baidu.endLineArray[id].push(line);
     }
-    if(SuperMap.Web.Adapter.BaiduAdapter.startLineArray[id].length == 0)
+    if(SuperMap.Web.iConnector.Baidu.startLineArray[id].length == 0)
     {
-        SuperMap.Web.Adapter.BaiduAdapter.callbackLineEvent[id](SuperMap.Web.Adapter.BaiduAdapter.endLineArray[id]);
+        SuperMap.Web.iConnector.Baidu.callbackLineEvent[id](SuperMap.Web.iConnector.Baidu.endLineArray[id]);
     }
     else
     {
-        var pots = SuperMap.Web.Adapter.BaiduAdapter.startLineArray[id].splice(0,1);
-        SuperMap.Web.Adapter.BaiduAdapter.transferPoint(pots[0],new SuperMap.Projection("EPSG:4326"),SuperMap.Web.Adapter.BaiduAdapter.circulateLineSend,type);
+        var pots = SuperMap.Web.iConnector.Baidu.startLineArray[id].splice(0,1);
+        SuperMap.Web.iConnector.Baidu.transferPoint(pots[0],new SuperMap.Projection("EPSG:4326"),SuperMap.Web.iConnector.Baidu.circulateLineSend,type);
     }
 }
 /**
@@ -474,26 +474,26 @@ SuperMap.Web.Adapter.BaiduAdapter.circulateLineSend = function(points,type,id){
  * @type {Array} 面数组的数组
  * 首先本身是一个数组，每一个数据代表某一批面数组，每批面数组又是多个面组成的，每一个面其实又是点数组组成的
  */
-SuperMap.Web.Adapter.BaiduAdapter.startPolygonArray = [];
+SuperMap.Web.iConnector.Baidu.startPolygonArray = [];
 /**
  * Property:
  * 记录转换后的面数组的数组
  * @type {Array}  BMap.Polygon数组的数组
  * 首先本身是一个数组，每一个数据代表某一批BMap.Polygon面数组，每批面数组又是多个BMap.Polygon面组成的
  */
-SuperMap.Web.Adapter.BaiduAdapter.endPolygonArray = [];
+SuperMap.Web.iConnector.Baidu.endPolygonArray = [];
 /**
  * Property:
  * 记录用户注册的面回调函数数组
  * @type {Array}  回调函数数组
  */
-SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEvent = [];
+SuperMap.Web.iConnector.Baidu.callbackPolygonEvent = [];
 /**
  * Property:
  *  记录当前为第多少批面数组需要进行转换
  * @type {number}  默认为-1，每有一批面数组需要转换就自加1
  */
-SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEventCounts = -1;
+SuperMap.Web.iConnector.Baidu.callbackPolygonEventCounts = -1;
 /**
  * Method:
  * 每次服务器转换完面后的回调函数，在此判定是否将所有面全部转换，如果没有则继续转换
@@ -501,20 +501,20 @@ SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEventCounts = -1;
  * @param id 代表此次转换完的面是属于第id批的面数组，避免回调函数出错
  * @param type {Number} 首先数据会在内部转换为4326坐标系，当为0时代表数据是标准GPS坐标转向百度坐标，当为2时代表数据是根据国家测绘局规定进行了统一偏移的数据（中国范围内的google数据就是其中之一）转向百度坐标，默认为0.
  */
-SuperMap.Web.Adapter.BaiduAdapter.circulatePolygonSend = function(points,type,id){
+SuperMap.Web.iConnector.Baidu.circulatePolygonSend = function(points,type,id){
     if(points !=null)
     {
         var polygon =new BMap.Polygon(points, {strokeColor:"blue", strokeWeight:6, strokeOpacity:0.5});
-        SuperMap.Web.Adapter.BaiduAdapter.endPolygonArray[id].push(polygon);
+        SuperMap.Web.iConnector.Baidu.endPolygonArray[id].push(polygon);
     }
-    if(SuperMap.Web.Adapter.BaiduAdapter.startPolygonArray[id].length == 0)
+    if(SuperMap.Web.iConnector.Baidu.startPolygonArray[id].length == 0)
     {
-        SuperMap.Web.Adapter.BaiduAdapter.callbackPolygonEvent[id](SuperMap.Web.Adapter.BaiduAdapter.endPolygonArray[id]);
+        SuperMap.Web.iConnector.Baidu.callbackPolygonEvent[id](SuperMap.Web.iConnector.Baidu.endPolygonArray[id]);
     }
     else
     {
-        var pots = SuperMap.Web.Adapter.BaiduAdapter.startPolygonArray[id].splice(0,1);
-        SuperMap.Web.Adapter.BaiduAdapter.transferPoint(pots[0],new SuperMap.Projection("EPSG:4326"),SuperMap.Web.Adapter.BaiduAdapter.circulatePolygonSend,type);
+        var pots = SuperMap.Web.iConnector.Baidu.startPolygonArray[id].splice(0,1);
+        SuperMap.Web.iConnector.Baidu.transferPoint(pots[0],new SuperMap.Projection("EPSG:4326"),SuperMap.Web.iConnector.Baidu.circulatePolygonSend,type);
     }
 }
 

@@ -10,17 +10,17 @@ if(SuperMap.Web == undefined )
 {
     SuperMap.Web = new Object();
 }
-//判定一下是否存在了SuperMap.Web.Adapter，如果没有则初始化一个
-if(SuperMap.Web.Adapter == undefined )
+//判定一下是否存在了SuperMap.Web.iConnector，如果没有则初始化一个
+if(SuperMap.Web.iConnector == undefined )
 {
-    SuperMap.Web.Adapter = new Object();
+    SuperMap.Web.iConnector = new Object();
 }
 /**
  * Class:
  * ArcGIS适配器类
  * @constructor
  */
-SuperMap.Web.Adapter.ArcGISAdapter = function(){
+SuperMap.Web.iConnector.ArcGIS = function(){
 
 }
 /**
@@ -33,7 +33,7 @@ SuperMap.Web.Adapter.ArcGISAdapter = function(){
  * layersID - {String} 设置临时图层的id，一般用于专题图的叠加使用
  * @returns {TTileLayer} 返回ArcGIS地图的扩展图层对象
  */
-SuperMap.Web.Adapter.ArcGISAdapter.getLayer = function(url,options){
+SuperMap.Web.iConnector.ArcGIS.getLayer = function(url,options){
     dojo.declare("MyTiledMapServiceLayer", esri.layers.TiledMapServiceLayer, {
         constructor: function(url,options) {
             if(url == undefined)
@@ -170,7 +170,7 @@ SuperMap.Web.Adapter.ArcGISAdapter.getLayer = function(url,options){
  * @param projection  {SuperMap.Projection} 待转换点的投影系（数组里面的所有点投影系都必须是统一的），默认为4326.
  * @returns {Array} 返回esri.geometry.Point对象的数组
  */
-SuperMap.Web.Adapter.ArcGISAdapter.transferPoint = function(array,projection){
+SuperMap.Web.iConnector.ArcGIS.transferPoint = function(array,projection){
     if((typeof array) == "object" && array != null && array.constructor == Array)
     {
         var pro = projection || new SuperMap.Projection("EPSG:4326");
@@ -197,7 +197,7 @@ SuperMap.Web.Adapter.ArcGISAdapter.transferPoint = function(array,projection){
             {
                 smPoint =  SuperMap.Projection.transform(new SuperMap.Geometry.Point(array[i][0],array[i][1]),pro,new SuperMap.Projection("EPSG:4326"));
             }
-            var traPoint = SuperMap.Web.Adapter.ArcGISAdapter.transfer(smPoint.x,smPoint.y);
+            var traPoint = SuperMap.Web.iConnector.ArcGIS.transfer(smPoint.x,smPoint.y);
             var point = new esri.geometry.Point(traPoint.lng,traPoint.lat);
             points.push(point);
         }
@@ -221,7 +221,7 @@ SuperMap.Web.Adapter.ArcGISAdapter.transferPoint = function(array,projection){
  * @param projection  {SuperMap.Projection} 需要转换的线的坐标系
  * @returns {Array} 返回esri.geometry.Polyline对象的数组
  */
-SuperMap.Web.Adapter.ArcGISAdapter.transferLine = function(array,projection){
+SuperMap.Web.iConnector.ArcGIS.transferLine = function(array,projection){
     if((typeof array) == "object" && array != null && array.constructor == Array)
     {
         var pro = projection || new SuperMap.Projection("EPSG:4326");
@@ -233,7 +233,7 @@ SuperMap.Web.Adapter.ArcGISAdapter.transferLine = function(array,projection){
             //支持supermap的LineString
             if(array[i].CLASS_NAME && array[i].CLASS_NAME == "SuperMap.Geometry.LineString")
             {
-                var points = SuperMap.Web.Adapter.ArcGISAdapter.transferPoint(array[i].components,pro);
+                var points = SuperMap.Web.iConnector.ArcGIS.transferPoint(array[i].components,pro);
                 line = new esri.geometry.Polyline();
                 line.addPath(points);
             }
@@ -243,7 +243,7 @@ SuperMap.Web.Adapter.ArcGISAdapter.transferLine = function(array,projection){
                 line = new esri.geometry.Polyline();
                 for(var j = 0;j<array[i].paths.length;j++)
                 {
-                    var points = SuperMap.Web.Adapter.ArcGISAdapter.transferPoint(array[i].paths[j],pro);
+                    var points = SuperMap.Web.iConnector.ArcGIS.transferPoint(array[i].paths[j],pro);
                     line.addPath(points);
                 }
             }
@@ -277,7 +277,7 @@ SuperMap.Web.Adapter.ArcGISAdapter.transferLine = function(array,projection){
  * @param projection {SuperMap.Projection} 需要转换的多边形的坐标系
  * @returns {Array} 返回esri.geometry.Polygon对象的数组
  */
-SuperMap.Web.Adapter.ArcGISAdapter.transferPolygon = function(array,projection){
+SuperMap.Web.iConnector.ArcGIS.transferPolygon = function(array,projection){
     if((typeof array) == "object" && array != null && array.constructor == Array)
     {
         var pro = projection || new SuperMap.Projection("EPSG:4326");
@@ -289,7 +289,7 @@ SuperMap.Web.Adapter.ArcGISAdapter.transferPolygon = function(array,projection){
             //支持supermap的Polygon
             if(array[i].CLASS_NAME && array[i].CLASS_NAME == "SuperMap.Geometry.Polygon")
             {
-                var points = SuperMap.Web.Adapter.ArcGISAdapter.transferPoint(array[i].getVertices(false),pro);
+                var points = SuperMap.Web.iConnector.ArcGIS.transferPoint(array[i].getVertices(false),pro);
 
                 polygon = new esri.geometry.Polygon();
                 polygon.addRing(points);
@@ -301,7 +301,7 @@ SuperMap.Web.Adapter.ArcGISAdapter.transferPolygon = function(array,projection){
                 polygon = new esri.geometry.Polygon();
                 for(var j = 0;j<array[i].rings.length;j++)
                 {
-                    var points = SuperMap.Web.Adapter.ArcGISAdapter.transferPoint(array[i].rings[j],pro);
+                    var points = SuperMap.Web.iConnector.ArcGIS.transferPoint(array[i].rings[j],pro);
                     polygon.addRing(points);
                 }
 
@@ -325,6 +325,6 @@ SuperMap.Web.Adapter.ArcGISAdapter.transferPolygon = function(array,projection){
  * @param lat {Number} 需要纠偏的纬度坐标
  * @returns {Object} 返回一个Object对象，如：{lng:116.4,lat:39.4}
  */
-SuperMap.Web.Adapter.ArcGISAdapter.transfer = function(lng,lat){
+SuperMap.Web.iConnector.ArcGIS.transfer = function(lng,lat){
     return {lng:lng,lat:lat};
 }

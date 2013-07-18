@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
     <script src="http://leafletjs.com/dist/leaflet.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="LeafletAdapter.js"></script>
+    <script type="text/javascript" src="iConnectorLeaflet.js"></script>
     <script type="text/javascript">
         var map,url = "http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
         function init()
@@ -112,7 +112,7 @@
         }
         function themeCompleted(themeEventArgs) {
             if(themeEventArgs.result.resourceInfo.id) {
-                var canvasTiles =  SuperMap.Web.Adapter.LeafletAdapter.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
+                var canvasTiles =  SuperMap.Web.iConnector.Leaflet.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
                 canvasTiles.addTo(map);
             }
         }

@@ -1,6 +1,6 @@
 ### 一、简介
 
-SuperMap.Web.Adapter 是一款基于SuperMap iClient 6R(2012) for JavaScript 和第三方地图JavaScript开发的适配器工具，此处面对的是以第三方地图JavaScript为基础，并且又想加入SuperMap iServer强大的功能的用户。现第三方API支持百度、天地图、Google、Leaflet和ArcGIS。
+SuperMap.Web.iConnector 是一款基于SuperMap iClient 6R(2012) for JavaScript 和第三方地图JavaScript开发的适配器工具，此处面对的是以第三方地图JavaScript为基础，并且又想加入SuperMap iServer强大的功能的用户。现第三方API支持百度、天地图、Google、Leaflet和ArcGIS。
 
 ### 二、特性描述
 
@@ -16,17 +16,11 @@ SuperMap.Web.Adapter 是一款基于SuperMap iClient 6R(2012) for JavaScript 和
 ### 三、使用说明
 
 提供了针对百度、天地图、Google、Leaflet和ArcGIS的不同接口，详见：
-
-1、Adapter for Baidu help.docx
-
-2、Adapter for Tianditu help.docx
-
-3、Adapter for Google help.docx
-
-4、Adapter for Leaflet help.docx
-
-5、Adapter for ArcGIS help.docx
-
+1、iConnector for Baidu help.docx
+2、iConnector for Tianditu help.docx
+3、iConnector for Google help.docx
+4、iConnector for Leaflet help.docx
+5、iConnector for ArcGIS help.docx
 由于范例访问的服务器非本地服务器，所以可以直接运行范例，范例中使用的服务器仅支持范例使用。
 
 ### 四、许可授权
@@ -37,21 +31,27 @@ SuperMap.Web.Adapter 是一款基于SuperMap iClient 6R(2012) for JavaScript 和
 
 1、如下是在百度地图上面叠加了全国的等级符号专题图
 
-![original_THmC_4b6f000174941190](http://fmn.rrimg.com/fmn060/20130516/1450/large_xrvX_4aee0000693d118f.jpg)
+![original_THmC_4b6f000174941190](images/overlyingThemeGraduatedSymbolToBaidu.jpg)
 
 2、如下是在天地图上通过几何查询iserver上的各国首都
 
-![original_THmC_4b6f000174941190](http://fmn.rrimg.com/fmn063/20130515/1520/large_AkWW_252300003898118c.jpg)
+![original_THmC_4b6f000174941190](images/transferSuperMapPoint_Tianditu.jpg)
 
 3、如下是在Google地图上叠加了全国的省份的分段专题图
 
-![original_THmC_4b6f000174941190](http://fmn.rrimg.com/fmn062/20130531/1430/large_g3ov_44640000400d1191.jpg)
+![original_THmC_4b6f000174941190](images/overlyingThemeRangeToGoogle.jpg)
 
 4、如下是使用Leaflet的API出的Openstreet的地图，叠加了全世界的各国首都的矩阵标签专题图
-![original_THmC_4b6f000174941190](http://fmn.rrimg.com/fmn064/20130531/1430/large_YPm1_53fd00000b4d1190.jpg)
+![original_THmC_4b6f000174941190](images/overlyingThemeLabelToOpenStreetMap.jpg)
 
 5、如下是在ArcGIS地图上面叠加了全国省份的单值专题图
-![original_THmC_4b6f000174941190](http://fmn.rrimg.com/fmn061/20130531/1435/large_kS4b_721500003933125d.jpg)
+![original_THmC_4b6f000174941190](images/overlyingThemeUniqueToArcGIS.jpg)
+
+6、如下是在天地图上面叠加了京津的统计专题图
+![original_THmC_4b6f000174941190](images/overlyingThemeGraphToTianditu.jpg)
+
+7、如下是在天地图上面进行缓冲区分析
+![original_THmC_4b6f000174941190](images/bufferQuery_Tianditu.jpg)
 
 
 

@@ -4,7 +4,7 @@
     <title></title>
     <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="TiandituAdapter.js"></script>
+    <script type="text/javascript" src="iConnectorTianditu.js"></script>
     <script type="text/javascript">
         var map,url="http://support.supermap.com.cn:8090/iserver/services/map-jingjin/rest/maps/京津地区人口分布图_专题图"
         function init()
@@ -74,9 +74,9 @@
         }
         function themeCompleted(themeEventArgs) {
             if(themeEventArgs.result.resourceInfo.id) {
-                var baselayer = SuperMap.Web.Adapter.TiandituAdapter.getLayer(url);
+                var baselayer = SuperMap.Web.iConnector.Tianditu.getLayer(url);
                 map.addLayer(baselayer);
-                var themeLayer = SuperMap.Web.Adapter.TiandituAdapter.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
+                var themeLayer = SuperMap.Web.iConnector.Tianditu.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
                map.addLayer(themeLayer);
 
 

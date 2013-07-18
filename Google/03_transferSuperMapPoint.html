@@ -6,11 +6,11 @@
     <title>TransferSuperMapPoint</title>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script src="../SuperMap.js"></script>
-    <script src="GoogleAdapter.js"></script>
+    <script src="iConnectorGoogle.js"></script>
     <script>
         function initialize() {
             var poi = {x:116.32715863448607,y:39.990912172420714};
-            var myLatlng = SuperMap.Web.Adapter.GoogleAdapter.transferPoint([poi],new SuperMap.Projection("EPSG:4326"))[0];
+            var myLatlng = SuperMap.Web.iConnector.Google.transferPoint([poi],new SuperMap.Projection("EPSG:4326"))[0];
             var mapOptions = {
                 zoom: 14,
                 center: myLatlng,

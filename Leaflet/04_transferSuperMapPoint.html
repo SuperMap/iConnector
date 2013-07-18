@@ -6,12 +6,12 @@
     <link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
     <script src="http://leafletjs.com/dist/leaflet.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="LeafletAdapter.js"></script>
+    <script type="text/javascript" src="iConnectorLeaflet.js"></script>
     <script type="text/javascript">
         function init()
         {
             var point = new SuperMap.Geometry.Point(116.39724742809017,39.913340762914956);
-            var myLatlng = SuperMap.Web.Adapter.LeafletAdapter.transferPoint([point])[0];
+            var myLatlng = SuperMap.Web.iConnector.Leaflet.transferPoint([point])[0];
             var map = L.map('map').setView(myLatlng, 8);
             L.tileLayer('http://{s}.tile.cloudmade.com/BC9A493B41014CAABB98F0471D759707/997/256/{z}/{x}/{y}.png', {
                 attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',

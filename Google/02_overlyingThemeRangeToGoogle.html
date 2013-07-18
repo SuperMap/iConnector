@@ -4,7 +4,7 @@
     <title>OverlyingThemeRangeToGoogle</title>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script src="../SuperMap.js"></script>
-    <script src="GoogleAdapter.js"></script>
+    <script src="iConnectorGoogle.js"></script>
     <script>
         var map, url = "http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China";
         function initialize() {
@@ -68,7 +68,7 @@
         function themeCompleted(themeEventArgs) {
             if(themeEventArgs.result.resourceInfo.id) {
                 map.overlayMapTypes.insertAt(
-                        0, SuperMap.Web.Adapter.GoogleAdapter.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id}));
+                        0, SuperMap.Web.iConnector.Google.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id}));
             }
         }
         function themeFailed(serviceFailedEventArgs) {

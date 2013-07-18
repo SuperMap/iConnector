@@ -4,7 +4,7 @@
     <title>OverlyingChinaToGoogle</title>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script src="../SuperMap.js"></script>
-    <script src="GoogleAdapter.js"></script>
+    <script src="iConnectorGoogle.js"></script>
     <script>
         var url = "http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China";
         function initialize() {
@@ -19,7 +19,7 @@
                     mapOptions);
             var lat = new google.maps.LatLng(41.850033, 116);
             map.overlayMapTypes.insertAt(
-                    0, SuperMap.Web.Adapter.GoogleAdapter.getLayer(url));
+                    0, SuperMap.Web.iConnector.Google.getLayer(url));
         }
         google.maps.event.addDomListener(window, 'load', initialize);
     </script>

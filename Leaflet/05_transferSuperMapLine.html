@@ -6,7 +6,7 @@
     <link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
     <script src="http://leafletjs.com/dist/leaflet.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="LeafletAdapter.js"></script>
+    <script type="text/javascript" src="iConnectorLeaflet.js"></script>
     <script type="text/javascript">
         function init()
         {
@@ -25,9 +25,8 @@
                 new SuperMap.Geometry.Point(116.5,41.5)
             ];
             var line = new SuperMap.Geometry.LineString(points);
-            var gLine = SuperMap.Web.Adapter.LeafletAdapter.transferLine([line])[0];
+            var gLine = SuperMap.Web.iConnector.Leaflet.transferLine([line])[0];
             gLine.addTo(map);
-            map.fitBounds(gLine.getBounds());
         }
     </script>
 </head>

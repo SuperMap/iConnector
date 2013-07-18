@@ -8,7 +8,7 @@
     </style>
     <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=95a21d20cfe4df8d03f267282e62d8ae"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="BaiduAdapter.js"></script>
+    <script type="text/javascript" src="iConnectorBaidu.js"></script>
     <title>叠加专题图</title>
 </head>
 <body>
@@ -22,7 +22,7 @@
     map.addControl(new BMap.ScaleControl());
     map.addControl(new BMap.NavigationControl());
     map.enableScrollWheelZoom(true);
-    map.centerAndZoom(new BMap.Point(0, 0), 1);
+    map.centerAndZoom(new BMap.Point(116, 39), 4);
 
     function addThemeGraduatedSymbol() {
         var themeService = new SuperMap.REST.ThemeService(url,
@@ -56,7 +56,7 @@
     function themeCompleted(themeEventArgs) {
         if(themeEventArgs.result.resourceInfo.id) {
             var id =  themeEventArgs.result.resourceInfo.id;
-            var tileLayer = SuperMap.Web.Adapter.BaiduAdapter.getLayer(url,{layersID:id});
+            var tileLayer = SuperMap.Web.iConnector.Baidu.getLayer(url,{layersID:id});
 
             map.addTileLayer(tileLayer);
         }

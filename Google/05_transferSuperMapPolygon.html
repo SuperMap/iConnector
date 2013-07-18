@@ -6,7 +6,7 @@
     <title>TransferSuperMapPolygon</title>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script src="../SuperMap.js"></script>
-    <script src="GoogleAdapter.js"></script>
+    <script src="iConnectorGoogle.js"></script>
     <script>
         function initialize() {
             var myLatLng = new google.maps.LatLng(39, 116);
@@ -26,7 +26,7 @@
             ];
             var line = new SuperMap.Geometry.LinearRing(points);
             var polygon = new SuperMap.Geometry.Polygon([line]);
-            var gPolygon = SuperMap.Web.Adapter.GoogleAdapter.transferPolygon([polygon])[0];
+            var gPolygon = SuperMap.Web.iConnector.Google.transferPolygon([polygon])[0];
             var options = {strokeColor: '#FF0000'};
             gPolygon.setOptions(options);
             gPolygon.setMap(map);

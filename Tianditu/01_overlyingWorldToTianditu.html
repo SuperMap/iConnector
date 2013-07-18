@@ -5,17 +5,15 @@
     <title></title>
     <script type="text/javascript" src="http://api.tianditu.com/js/maps.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
-    <script type="text/javascript" src="TiandituAdapter.js"></script>
+    <script type="text/javascript" src="iConnectorTianditu.js"></script>
     <script type="text/javascript">
-        //http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World
-        //http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China
         var map,url="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
         function init()
         {
-            map = new TMap("mapDiv",{projection: "EPSG:900913"});
+            map = new TMap("mapDiv",{projection: "EPSG:4326"});
             map.centerAndZoom(new TLngLat(116.40969,39.89945),1);
             map.enableHandleMouseScroll();
-            var layer = SuperMap.Web.Adapter.TiandituAdapter.getLayer(url);
+            var layer = SuperMap.Web.iConnector.Tianditu.getLayer(url);
             map.addLayer(layer);
         }
         function transferToEPSG3857()
@@ -29,10 +27,13 @@
     </script>
 </head>
 <body onload="init()">
-          <div id="mapDiv" style="width: 1400px;height: 700px"></div>
+          <div id="mapDiv" style="width: 1400px;height: 850px"></div>
           <input type="button" onclick="transferToEPSG3857()" value="转换为EPSG：3857" >
           <input type="button" onclick="transferToEPSG4326()" value="转换为EPSG：4326" >
 </body>
 </html>
+
+//http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World
+//http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China
 
 

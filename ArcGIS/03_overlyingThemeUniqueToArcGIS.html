@@ -24,7 +24,7 @@
     </style>
     <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
       <script src="../SuperMap.js"></script>
-      <script src="ArcGISAdapter.js"></script>
+      <script src="iConnectorArcGIS.js"></script>
     <script>
         dojo.require("esri.map");
         var map;
@@ -207,7 +207,7 @@
 
         function themeCompleted(themeEventArgs) {
             if(themeEventArgs.result.resourceInfo.id) {
-                var layer = SuperMap.Web.Adapter.ArcGISAdapter.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
+                var layer = SuperMap.Web.iConnector.ArcGIS.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
                 map.addLayer(layer);
             }
         }

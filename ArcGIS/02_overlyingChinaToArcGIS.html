@@ -22,7 +22,7 @@
     </style>
     <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
       <script src="../SuperMap.js"></script>
-      <script src="ArcGISAdapter.js"></script>
+      <script src="iConnectorArcGIS.js"></script>
     <script>
         dojo.require("esri.map");
         var map;
@@ -31,7 +31,7 @@
             map = new esri.Map("map");
             var layer = new esri.layers.ArcGISTiledMapServiceLayer("http://www.arcgisonline.cn/ArcGIS/rest/services/ChinaOnlineCommunity/MapServer");
             map.addLayer(layer);
-            var layerChina = SuperMap.Web.Adapter.ArcGISAdapter.getLayer(url);
+            var layerChina = SuperMap.Web.iConnector.ArcGIS.getLayer(url);
             map.addLayer(layerChina);
 
         }

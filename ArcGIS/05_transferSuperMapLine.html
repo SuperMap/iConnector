@@ -23,7 +23,7 @@
     </style>
     <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
     <script src="../SuperMap.js"></script>
-    <script src="ArcGISAdapter.js"></script>
+    <script src="iConnectorArcGIS.js"></script>
     <script>
         dojo.require("esri.map");
         dojo.require("esri.layers.agstiled");
@@ -44,7 +44,7 @@
                 new SuperMap.Geometry.Point(116.5,41.5)
             ];
             var line = new SuperMap.Geometry.LineString(points);
-            var gLine = SuperMap.Web.Adapter.ArcGISAdapter.transferLine([line])[0];
+            var gLine = SuperMap.Web.iConnector.ArcGIS.transferLine([line])[0];
 
 
             var lineSymbol = new esri.symbol.CartographicLineSymbol(

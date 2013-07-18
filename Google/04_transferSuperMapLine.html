@@ -6,7 +6,7 @@
     <title>TransferSuperMapLine</title>
     <script src="https://maps.googleapis.com/maps/api/js?v=3.exp&sensor=false"></script>
     <script src="../SuperMap.js"></script>
-    <script src="GoogleAdapter.js"></script>
+    <script src="iConnectorGoogle.js"></script>
     <script>
         function initialize() {
             var myLatLng = new google.maps.LatLng(39, 116);
@@ -25,7 +25,7 @@
                 new SuperMap.Geometry.Point(116.5,41.5)
             ];
             var line = new SuperMap.Geometry.LineString(points);
-            var gLine = SuperMap.Web.Adapter.GoogleAdapter.transferLine([line])[0];
+            var gLine = SuperMap.Web.iConnector.Google.transferLine([line])[0];
             var options = {strokeColor: '#FF0000'};
             gLine.setOptions(options);
             gLine.setMap(map);
