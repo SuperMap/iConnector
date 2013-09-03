@@ -1,6 +1,6 @@
 ### 一、简介
 
-SuperMap.Web.iConnector 是一款基于SuperMap iClient 6R(2012) for JavaScript 和第三方地图JavaScript开发的适配器工具，此处面对的是以第三方地图JavaScript为基础，并且又想加入SuperMap iServer强大的功能的用户。现第三方API支持百度、天地图、Google、Leaflet和ArcGIS。
+SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三方地图JavaScript开发的适配器工具，此处面对的是以第三方地图JavaScript为基础，并且又想加入SuperMap iServer强大的功能的用户。现第三方API支持百度、天地图、Google、Leaflet和ArcGIS。
 
 ### 二、特性描述
 
