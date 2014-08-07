@@ -1,0 +1,88 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9, IE=10">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>QueryBySQL</title>
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/dojo/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
+    <style>
+        html, body, #map {
+            height:100%;
+            width:100%;
+            margin:0;
+            padding:0;
+        }
+        body {
+            height: 90%;
+            background-color:#FFF;
+            overflow:hidden;
+            font-family:"Trebuchet MS";
+        }
+    </style>
+    <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
+    <script src="../SuperMap.js"></script>
+    <script src="iConnectorArcGIS.js"></script>
+    <script>
+        dojo.require("esri.map");
+        dojo.require("esri.layers.agstiled");
+		var map,
+	         url ="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
+        function Init() {
+            map = new esri.Map("map",{basemap: "streets",
+                center: [116.5, 39.5],
+                zoom: 3});
+        
+        }
+		function queryBySQL() {    //SQL查询
+
+                var queryParam, queryBySQLParams, queryBySQLService;
+                queryParam = new SuperMap.REST.FilterParameter({  //过滤条件
+                    name: "Capitals@World.1",
+                    attributeFilter: "SMID>96.5 and CAP_POP>1629858.22"
+                });
+                queryBySQLParams = new SuperMap.REST.QueryBySQLParameters({  //查询条件
+                    queryParams: [queryParam]
+                });
+                queryBySQLService = new SuperMap.REST.QueryBySQLService(url, {    //设置服务请求参数
+                    eventListeners: {"processCompleted": processCompleted, "processFailed": processFailed}});
+                queryBySQLService.processAsync(queryBySQLParams);//提交服务请求
+            }
+        function processCompleted(queryEventArgs) {  //服务请求完成
+            var i, j, feature,
+               result = queryEventArgs.result;
+            if (result && result.recordsets) {
+                 for (i=0; i<result.recordsets.length; i++) {
+                    if (result.recordsets[i].features) {
+                       for (j=0; j<result.recordsets[i].features.length; j++) {
+                            feature = result.recordsets[i].features[j];
+						    var myPoint = SuperMap.Web.iConnector.ArcGIS.transferPoint([feature.geometry])[0];//返回ARCGIS的点
+						    var markerSymbol = new esri.symbol.PictureMarkerSymbol("../images/markerbig.png",30,30);
+                            var graphic = new esri.Graphic(myPoint, markerSymbol);
+                            map.graphics.add(graphic);//将转换后的点加载到地图
+                            }
+                        }
+                    }
+                }
+           }
+            function processFailed(e)  //请求失败
+			{
+                alert(e.error.errorMsg);
+            }
+			function clearGraphic() //清除地图上所有的graphics 
+			{
+			    map.graphics.clear();
+			}
+        dojo.addOnLoad(Init);
+		
+    </script>
+</head>
+<body class="claro" >
+<div id="toolbar">
+            <input type="button" value="查询" onclick="queryBySQL()" />
+            <input type="button" value="清除" onclick="clearGraphic()" />
+        </div>
+<div id="map"></div>
+</body>
+</html> 

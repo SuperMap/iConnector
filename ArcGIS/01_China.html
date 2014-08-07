@@ -12,7 +12,7 @@
     <script src="iConnectorArcGIS.js"></script>
     <script>
         dojo.require("esri.map");
-        var url = "http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China";
+        var url = "http://localhost:8090/iserver/services/map-china400/rest/maps/China";
         function init() {
             var map = new esri.Map("map");
             var layer = SuperMap.Web.iConnector.ArcGIS.getLayer(url);

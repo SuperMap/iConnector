@@ -1,0 +1,94 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <style type="text/css">
+        body, html,#allmap {width: 100%;height: 100%;overflow: hidden;margin:0;}
+        #l-map{height:100%;width:78%;float:left;border-right:2px solid #bcbcbc;}
+        #r-result{height:100%;width:20%;float:left;}
+    </style>
+    <script type="text/javascript" src="http://api.map.baidu.com/api?v=1.5&ak=95a21d20cfe4df8d03f267282e62d8ae"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="iConnectorBaidu.js"></script>
+    <title>queryByDistance</title>
+</head>
+<body>
+<input type = "button" value = "距离查询"Onclick = "queryByDistance()"/>
+<input type = "button" value = "清除查询"Onclick = "clearoverlay()"/>
+<div id="allmap" style ="width:800px height:800px"></div>
+</body>
+</html>
+<script type="text/javascript">
+    //地图初始化
+      
+      var map = new BMap.Map("allmap");  //创建百度地图
+	  var point = new BMap.Point(116.404, 39.915);    // 创建点坐标
+      map.centerAndZoom(point,5);                     // 初始化地图,设置中心点坐标和地图级别。
+      var iconself = new BMap.Icon('../images/marker.png',new BMap.Size(35,30));//设置中心点的图标
+      
+	  var url="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World"; 
+     
+	 map.addControl(new BMap.NavigationControl());//添加百度地图控件
+	 
+	  var marker = new BMap.Marker(point,{
+	       icon:iconself
+	  });
+	  marker.disableMassClear();
+	  map.addOverlay(marker);  
+	  map.enableScrollWheelZoom();  //设置可以使用滚轮控制地图放大缩小
+	
+	 //距离查询
+	function queryByDistance() {   
+         var centerPoint = new SuperMap.Geometry.Point(116.404, 39.915);//构造一个点的几何图形
+		var queryByDistanceParams = new SuperMap.REST.QueryByDistanceParameters({
+			queryParams: new Array(new SuperMap.REST.FilterParameter({name: "Capitals@World.1"})),//设置数据源及参数
+			returnContent: true,
+			distance: 30,
+			geometry:centerPoint
+		});
+
+		var queryByDistanceService = new SuperMap.REST.QueryByDistanceService(url);//距离查询服务
+		  queryByDistanceService.events.on({
+			"processCompleted": bufferCompleted,
+			"processFailed":bufferFailed
+		 });
+	queryByDistanceService.processAsync(queryByDistanceParams); //发送请求
+     }
+	function bufferCompleted(queryEventArgs) {  //请求完成
+		var i, j, result = queryEventArgs.result;
+		var points = [];  //新建一个数组
+		for(i = 0;i < result.recordsets.length; i++) {
+			for(j = 0; j < result.recordsets[i].features.length; j++)
+			{
+				 var point = result.recordsets[i].features[j].geometry,
+				 size = new SuperMap.Size(44, 33),
+				 offset = new SuperMap.Pixel(-(size.w/2), -size.h),
+				 icon = new SuperMap.Icon("marker.png", size, offset);
+				 points.push(point);  //将距离查询后的点都放入数组
+
+			}
+		}
+		SuperMap.Web.iConnector.Baidu.transferPoint(points,new SuperMap.Projection("EPSG:4326"),acallback,2);//将supermap的点转换为百度的点
+		
+	}
+	function acallback(xyResults){//BMap.Point对象的数组（xyResults），接收转换的点
+        var points = []
+        for(var index in xyResults){
+            var point = xyResults[index];
+            points.push(point);
+            var marker1 = new BMap.Marker(point);
+            map.addOverlay(marker1);
+			
+        }
+    }
+	function clearoverlay()
+	{
+	  map.clearOverlays();//清除地图上所有覆盖物
+	  
+	}
+	function bufferFailed(e) 
+	{
+		 alert(e.error.errorMsg);
+		 
+	}
+</script>

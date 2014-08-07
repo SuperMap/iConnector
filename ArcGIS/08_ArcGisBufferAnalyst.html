@@ -1,0 +1,111 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=7, IE=9, IE=10">
+    <meta name="viewport" content="initial-scale=1, maximum-scale=1,user-scalable=no"/>
+    <title>BufferAnalyst</title>
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/dojo/dijit/themes/claro/claro.css">
+    <link rel="stylesheet" href="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/js/esri/css/esri.css">
+    <style>
+        html, body, #map {
+            height:100%;
+            width:100%;
+            margin:0;
+            padding:0;
+        }
+        body {
+            height: 90%;
+            background-color:#FFF;
+            overflow:hidden;
+            font-family:"Trebuchet MS";
+        }
+    </style>
+    <script src="http://serverapi.arcgisonline.com/jsapi/arcgis/3.5/"></script>
+    <script src="../SuperMap.js"></script>
+    <script src="iConnectorArcGIS.js"></script>
+    <script>
+        dojo.require("esri.map");
+        dojo.require("esri.layers.agstiled");
+		var map,
+		urlBuffer="http://support.supermap.com.cn:8090/iserver/services/spatialanalyst-changchun/restjsr/spatialanalyst";
+        function Init() {
+            map = new esri.Map("map",{basemap: "streets",
+                center: [116.5, 39.5],
+                zoom: 6});
+        }
+        
+		function drawLine() //画线
+        {
+           
+			var toolbar = new esri.toolbars.Draw(map, { showTooltips: true }); 
+			toolbar.activate(esri.toolbars.Draw.POLYLINE); 
+			dojo.connect(toolbar, "onDrawEnd",onDrawLine);
+			
+        }
+		function onDrawLine(geometry)
+        {
+            var points = [];
+            for(var i = 0;i<geometry.paths[0].length;i++)
+            {
+				var point = new SuperMap.Geometry.Point(geometry.paths[0][i][0],geometry.paths[0][i][1]);
+				point = SuperMap.Projection.transform(point,new SuperMap.Projection("EPSG:3857"),new SuperMap.Projection("EPSG:4326"));//转换投影
+                points.push(point);
+            }
+            var polyLine=new SuperMap.Geometry.LineString(points);//点构成线
+			var gLine = SuperMap.Web.iConnector.ArcGIS.transferLine([polyLine])[0];//转换为ARCGIS的线
+            var lineSymbol = new esri.symbol.CartographicLineSymbol(//设置线的风格
+                    esri.symbol.CartographicLineSymbol.STYLE_SOLID,
+                    new dojo.Color([255,255,0]), 5,
+                    esri.symbol.CartographicLineSymbol.CAP_ROUND,
+                    esri.symbol.CartographicLineSymbol.JOIN_MITER, 5
+            );
+            var graphic1 = new esri.Graphic(gLine, lineSymbol);
+            map.graphics.add(graphic1); //将线加载在地图上
+			
+			//缓冲区分析
+            var bufferServiceByGeometry = new SuperMap.REST.BufferAnalystService(urlBuffer), 
+                    bufferDistance = new SuperMap.REST.BufferDistance({
+                        value: 1
+                    }),
+                    bufferSetting = new SuperMap.REST.BufferSetting({
+                        endType: SuperMap.REST.BufferEndType.ROUND,
+                        leftDistance: bufferDistance,
+                        rightDistance: bufferDistance,
+                        semicircleLineSegment: 1
+                    }),
+                    geoBufferAnalystParam = new SuperMap.REST.GeometryBufferAnalystParameters({
+                        sourceGeometry: polyLine,
+                        bufferSetting: bufferSetting
+                    });
+
+            bufferServiceByGeometry.events.on(
+                    {
+                        "processCompleted": bufferAnalystCompleted
+                    });
+            bufferServiceByGeometry.processAsync(geoBufferAnalystParam);
+
+        }
+        function bufferAnalystCompleted(BufferAnalystEventArgs)
+        {
+
+            var bufferResultGeometry = BufferAnalystEventArgs.result.resultGeometry;
+			var regions = SuperMap.Web.iConnector.ArcGIS.transferPolygon([bufferResultGeometry])[0];
+			var fillSymbol = new esri.symbol.SimpleFillSymbol();
+            var graphic = new esri.Graphic(regions,fillSymbol);
+            map.graphics.add(graphic);
+        }
+		function clearGraphic() //清除地图上所有的graphics 
+			{
+			    map.graphics.clear();
+			}
+        dojo.addOnLoad(Init);
+    </script>
+</head>
+<body class="claro" >
+<div id="map"></div>
+
+<input type="button" onclick="drawLine()" value="线缓冲区">
+<input type="button" onclick="clearGraphic()" value="清除">
+</body>
+</html> 
