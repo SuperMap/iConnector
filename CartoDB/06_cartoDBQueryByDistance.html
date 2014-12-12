@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>CartoDBQueryByDistance</title>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.11/themes/css/cartodb.css" />
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.11/cartodb.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="iConnectorLeaflet.js"></script>
+    <script type="text/javascript">
+        var map,url = "http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
+
+        function init(){
+            var point = new SuperMap.Geometry.Point(116.1,39.8);
+            var myLatlng = SuperMap.Web.iConnector.Leaflet.transferPoint([point])[0];
+            map = new L.Map('map', {
+                center: [0,0],
+                zoom: 2
+            });
+            L.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
+                attribution: 'Stamen'
+            }).addTo(map);
+            cartodb.createLayer(map, 'http://documentation.cartodb.com/api/v2/viz/2b13c956-e7c1-11e2-806b-5404a6a683d5/viz.json')
+                    .addTo(map);
+            L.marker(myLatlng).addTo(map);
+        }
+        //距离查询
+        function queryByDistance() {
+            var centerPoint = new SuperMap.Geometry.Point(116.404,39.915);
+            var queryByDistanceParams = new SuperMap.REST.QueryByDistanceParameters({
+                queryParams: new Array(new SuperMap.REST.FilterParameter({name: "Capitals@World.1"})),
+                returnContent: true,
+                distance: 30,
+                geometry: centerPoint
+            });
+
+            var queryByDistanceService = new SuperMap.REST.QueryByDistanceService(url);
+            queryByDistanceService.events.on({
+                "processCompleted": processCompleted,
+                "processFailed": processFailed
+            });
+            queryByDistanceService.processAsync(queryByDistanceParams);
+        }
+        function processCompleted(queryEventArgs) {
+            var i, j, result = queryEventArgs.result;
+            var points = [];
+            for(i = 0;i < result.recordsets.length; i++) {
+                for(j = 0; j < result.recordsets[i].features.length; j++) {
+                    var point = result.recordsets[i].features[j].geometry;
+                    points.push(point);
+                    var resultIcon = L.icon({
+                        iconUrl: '../images/markerbig.png'
+                    });
+                    L.marker([point.y,point.x],{icon: resultIcon}).addTo(map);
+                }
+
+            }
+        }
+        function processFailed(e) {
+            alert(e.error.errorMsg);
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id ="map"style="width: 1100px; height: 700px"></div>
+<input type ="button" value ="距离查询" Onclick = "queryByDistance()"/>
+</body>
+</html>

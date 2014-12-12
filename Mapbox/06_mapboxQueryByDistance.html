@@ -1,0 +1,69 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>MapboxQueryByDistance</title>
+    <meta charset="utf-8"/>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="iConnectorLeaflet.js"></script>
+    <script type="text/javascript">
+        var map,url = "http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
+
+        function init()
+        {
+            var point = new SuperMap.Geometry.Point(116.1,39.8);
+            var myLatlng = SuperMap.Web.iConnector.Leaflet.transferPoint([point])[0];
+            L.mapbox.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q';
+            map = L.mapbox.map('map', 'examples.map-h67hf2ic')
+                    .setView([39.8, 116.1], 2);
+            L.marker(myLatlng, {
+                icon: L.mapbox.marker.icon({
+                    'marker-color': 'ff8888'
+                })
+            }).addTo(map);
+        }
+        //距离查询
+        function queryByDistance() {
+            var centerPoint = new SuperMap.Geometry.Point(116.404,39.915);
+            var queryByDistanceParams = new SuperMap.REST.QueryByDistanceParameters({
+                queryParams: new Array(new SuperMap.REST.FilterParameter({name: "Capitals@World.1"})),
+                returnContent: true,
+                distance: 30,
+                geometry: centerPoint
+            });
+
+            var queryByDistanceService = new SuperMap.REST.QueryByDistanceService(url);
+            queryByDistanceService.events.on({
+                "processCompleted": processCompleted,
+                "processFailed": processFailed
+            });
+            queryByDistanceService.processAsync(queryByDistanceParams);
+        }
+        function processCompleted(queryEventArgs) {
+            var i, j, result = queryEventArgs.result;
+            var points = [];
+            for(i = 0;i < result.recordsets.length; i++) {
+                for(j = 0; j < result.recordsets[i].features.length; j++) {
+                    var point = result.recordsets[i].features[j].geometry;
+                    points.push(point);
+                    var resultIcon = L.icon({
+                        iconUrl: '../images/markerbig.png'
+                    });
+                    L.marker([point.y,point.x],{icon: resultIcon}).addTo(map);
+                }
+
+            }
+        }
+        function processFailed(e) {
+            alert(e.error.errorMsg);
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="map"  style="width: 1000px; height: 600px"></div>
+<input type ="button" value ="距离查询" Onclick = "queryByDistance()"/>
+</body>
+</html>

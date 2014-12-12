@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>TransferSuperMapPoint</title>
+    <link rel="stylesheet" href="http://libs.cartocdn.com/cartodb.js/v3/3.11/themes/css/cartodb.css" />
+    <script src="http://libs.cartocdn.com/cartodb.js/v3/3.11/cartodb.js"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="iConnectorLeaflet.js"></script>
+    <script type="text/javascript">
+        var map,url = "http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China";
+        function init(){
+            var point = new SuperMap.Geometry.Point(116.3948,39.9173);
+            var myLatlng = SuperMap.Web.iConnector.Leaflet.transferPoint([point])[0];
+            map = new L.Map('map', {
+                center: [0,0],
+                zoom: 1
+            });
+        var canvasTiles =  SuperMap.Web.iConnector.Leaflet.getLayer(url);
+            canvasTiles.addTo(map);
+            cartodb.createLayer(map, 'http://documentation.cartodb.com/api/v2/viz/2b13c956-e7c1-11e2-806b-5404a6a683d5/viz.json')
+                    .addTo(map);
+            L.marker(myLatlng).bindPopup('BeiJiing').addTo(map);
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id ="map"style="width: 1100px; height: 700px"></div>
+
+</body>
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>TransferSuperMapPoint</title>
+    <meta name='viewport' content='initial-scale=1,maximum-scale=1,user-scalable=no' />
+    <script src='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.js'></script>
+    <link href='https://api.tiles.mapbox.com/mapbox.js/v2.1.4/mapbox.css' rel='stylesheet' />
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="iConnectorLeaflet.js"></script>
+    <script type="text/javascript">
+        function init()
+        {
+            var point = new SuperMap.Geometry.Point(116.3948,39.9173);
+            var myLatlng = SuperMap.Web.iConnector.Leaflet.transferPoint([point])[0];
+            L.mapbox.accessToken = 'pk.eyJ1IjoibWFwYm94IiwiYSI6IlhHVkZmaW8ifQ.hAMX5hSW-QnTeRCMAy9A8Q';
+            map = L.mapbox.map('map', 'examples.map-i86nkdio')
+                    .setView([0, 0], 2);
+            L.marker(myLatlng, {
+                icon: L.mapbox.marker.icon({
+                    'marker-color': 'ff8888'
+                })
+            }).bindPopup('BeiJing').addTo(map);
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="map"  style="width: 1000px; height: 600px"></div>
+</body>
+</html>
