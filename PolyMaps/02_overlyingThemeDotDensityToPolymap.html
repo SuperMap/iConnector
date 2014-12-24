@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>overlyingThemeDotDensityToPolymap</title>
+
+    <script type="text/javascript" src="polymaps.js "></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="iConnectorPolymaps.js"></script>
+
+    <style>
+        html, body {
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            background: #E5E0D9;
+        }
+
+        svg {
+            display: block;
+            overflow: hidden;
+            width: 100%;
+            height: 100%;
+        }
+        .compass .back {
+            fill: #eee;
+            fill-opacity: .8;
+        }
+
+        .compass .fore {
+            stroke: #999;
+            stroke-width: 1.5px;
+        }
+
+        .compass rect.back.fore {
+            fill: #999;
+            fill-opacity: .3;
+            stroke: #eee;
+            stroke-width: 1px;
+            shape-rendering: crispEdges;
+        }
+
+        .compass .direction {
+            fill: none;
+        }
+
+        .compass .chevron {
+            fill: none;
+            stroke: #999;
+            stroke-width: 5px;
+        }
+
+        .compass .zoom .chevron {
+            stroke-width: 4px;
+        }
+
+        .compass .active .chevron, .compass .chevron.active {
+            stroke: #fff;
+        }
+
+        .compass.active .active .direction {
+            fill: #999;
+        }
+    </style>
+    <script type="text/javascript">
+        var map,
+        url = "http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
+        var po=org.polymaps;
+        function init(){
+
+             map = po.map()
+                    .container(document.getElementById("map").appendChild(po.svg("svg")))
+                    .center({lat:0, lon: 0})
+                    .zoom(1)
+                    .add(po.interact()) ;
+            map.add(po.image()
+                    .url(po.url("http://{S}tile.cloudmade.com"
+                                    + "/1a1b06b230af4efdbb989ea99e9841af" // http://cloudmade.com/register
+                                    + "/999/256/{Z}/{X}/{Y}.png")
+                            .hosts(["a.", "b.", "c.", ""])));
+            map.add(po.compass())  ;
+        }
+        //生成点密度专题图
+        function addThemeDotDensity()
+        {
+            //创建制作点密度专题图服务类
+            var themeService = new SuperMap.REST.ThemeService(url, {eventListeners:{"processCompleted": themeCompleted, "processFailed": themeFailed}}),
+                    dotStyle = new SuperMap.REST.ServerStyle({
+                        markerSize: 3,
+                        markerSymbolID: 12
+                    }),
+                    themeDotDensity = new SuperMap.REST.ThemeDotDensity({
+                        dotExpression: "Pop_1994",
+                        value: 5000000,
+                        style: dotStyle
+                    }),
+                    themeParameters = new SuperMap.REST.ThemeParameters({
+                        themes: [themeDotDensity],
+                        datasetNames: ["Countries"],
+                        dataSourceNames: ["World"]
+                    });
+            //向iserver发送请求
+            themeService.processAsync(themeParameters);
+        }
+        //生成专题图后将其叠加到 openstreetmap 地图上面
+        function themeCompleted(themeEventArgs) {
+            if(themeEventArgs.result.resourceInfo.id) {
+                var canvasTiles =  SuperMap.Web.iConnector.PolyMaps.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
+                map.add(canvasTiles);
+            }
+        }
+        function themeFailed(serviceFailedEventArgs) {
+            alert(serviceFailedEventArgs.error.errorMsg);
+        }
+
+    </script>
+</head>
+<body onload="init()" style="width: 100%; height: 100%">
+<div id="map"style="width: 800px; height: 500px"></div>
+<input type="button" value="创建点密度专题图" onclick="addThemeDotDensity()" />
+</body>
+</html>
