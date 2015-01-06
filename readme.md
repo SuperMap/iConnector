@@ -1,6 +1,6 @@
 ### 一、简介
 
-SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三方地图JavaScript开发的适配器工具，此处面对的是以第三方地图JavaScript为基础，并且又想加入SuperMap iServer强大的功能的用户。现第三方API支持百度、天地图、Google、Leaflet、ArcGIS、MapBox、CartoDB、MapABC、Polymaps高德地图。
+SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三方地图JavaScript开发的适配器工具，此处面对的是以第三方地图JavaScript为基础，并且又想加入SuperMap iServer强大的功能的用户。现第三方API支持百度、天地图、Google、Leaflet、ArcGIS、MapBox、CartoDB、MapABC、Polymaps和高德地图。
 
 ### 二、特性描述
 
@@ -69,6 +69,9 @@ SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三
 
 11、如下是在CartoDB地图上面通过对线进行半径 10 米的圆头缓冲区分析
 ![original_THmC_4b6f000174941190](images/bufferAnylst_CartoDB.jpg)
+
+12、如下是在Polymaps地图上面进行点密度专题图
+![original_THmC_4b6f000174941190](images/overlyingThemeDotDensityToPolymaps.jpg)
 
 
 
