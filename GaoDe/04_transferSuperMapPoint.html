@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>TransferSuperMapPoint</title>
+    <link rel="stylesheet" type="text/css" href="http://developer.amap.com/Public/css/demo.Default.css" />
+    <script language="javascript" src="http://webapi.amap.com/maps?v=1.2&key=14bf161ae4e52fe25a972f6b7c9c0980"></script>
+    <script src="../SuperMap.js"></script>
+    <script src="iConnectorGaoDe.js"></script>
+    <script>
+        function init() {
+            var poi = {x:116.39674135,y:39.91713004};
+            var myLatlng = SuperMap.Web.iConnector.GaoDe.transferPoint([poi],new SuperMap.Projection("EPSG:4326"))[0];
+            var opt = {
+                center: new AMap.LngLat(116.39674135,39.91713004),//设置地图中心点
+                level: 4,//初始地图缩放级别
+                zooms:[4,17]
+            }
+            mapObj = new AMap.Map("iCenter",opt);
+            var marker =new AMap.Marker({
+                id:"marker",
+                position:myLatlng,
+                offset:new AMap.Pixel(-10.5,-32), //基点为图片左上角，设置相对基点的图片位置偏移量，向左向下为负
+               draggable:false   //不可拖动
+            });
+            mapObj.addOverlays(marker);
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="iCenter" style="width: 900px;height: 500px"></div>
+</body>
+</html>

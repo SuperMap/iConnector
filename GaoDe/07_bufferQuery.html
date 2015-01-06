@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN"
+        "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+    <title>BufferAnalyst</title>
+    <meta charset="utf-8">
+    <link rel="stylesheet" type="text/css" href="http://developer.amap.com/Public/css/demo.Default.css" />
+    <script language="javascript" src="http://webapi.amap.com/maps?v=1.2&key=14bf161ae4e52fe25a972f6b7c9c0980"></script>
+    <script src="../SuperMap.js"></script>
+    <script src="iConnectorGaoDe.js"></script>
+    <script type="text/javascript">
+        var map, regions,url ="http://support.supermap.com.cn:8090/iserver/services/spatialanalyst-changchun/restjsr/spatialanalyst";
+        var points = [
+            new SuperMap.Geometry.Point(116.39674135,39.91713004),
+            new SuperMap.Geometry.Point(104.02682248,30.69939851)
+        ];
+        var polyLine = new SuperMap.Geometry.LineString(points);     //点构成线
+        function init()
+        {
+            var opt = {
+                center: new AMap.LngLat(116.39674135,39.91713004),//设置地图中心点
+                level: 5,//初始地图缩放级别
+                zooms:[4,17]
+            }
+            map = new AMap.Map("map",opt);
+            var gLine = SuperMap.Web.iConnector.GaoDe.transferLine([polyLine])[0];
+            map.addOverlays(gLine);
+        }
+        //缓冲区分析
+        function bufferAnalystProcess()
+        {
+            if(regions)
+            {
+                map.removeLayer(regions);
+            }
+            var bufferServiceByGeometry = new SuperMap.REST.BufferAnalystService(url),
+
+                    bufferDistance = new SuperMap.REST.BufferDistance({
+                        value: 0.1
+                    }),
+
+                    bufferSetting = new SuperMap.REST.BufferSetting({
+                        endType: SuperMap.REST.BufferEndType.ROUND,
+                        leftDistance: bufferDistance,
+                        rightDistance: bufferDistance,
+                        semicircleLineSegment: 1
+                    }),
+
+                    geoBufferAnalystParam = new SuperMap.REST.GeometryBufferAnalystParameters({
+                        sourceGeometry: polyLine,
+                        bufferSetting: bufferSetting
+                    });
+
+            bufferServiceByGeometry.events.on(
+                    {
+                        "processCompleted": bufferAnalystCompleted
+                    });
+            bufferServiceByGeometry.processAsync(geoBufferAnalystParam);
+
+        }
+        function bufferAnalystCompleted(BufferAnalystEventArgs)
+        {
+            var bufferResultGeometry = BufferAnalystEventArgs.result.resultGeometry;
+            regions = SuperMap.Web.iConnector.GaoDe.transferPolygon([bufferResultGeometry]);
+            map.addOverlays(regions[0]);   //生成的缓冲区加载到地图
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="map"  style="width: 1000px; height: 600px"></div>
+<input type ="button" value ="线缓冲区"Onclick = "bufferAnalystProcess()"/>
+</body>
+</html>

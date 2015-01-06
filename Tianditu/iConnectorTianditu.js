@@ -92,15 +92,39 @@ SuperMap.Web.iConnector.Tianditu.getLayer = function(url,options){
     }
     tileLayer.scales3857 = scales3857;
 
+
+
+
+
     tileLayer.setGetTileUrl(
         function(x,y,z)
         {
+            if(this.myProjectionCodeName)
+            {}
+            else
+            {
+                //遍历一下tileLayer，需找当前的投影系属性名称
+                var ps = this.tmaps;
+                for ( var p in ps )
+                {
+                    if ( typeof ( ps [ p ]) == " function " )
+                    {
+                    }
+                    else
+                    { // p 为属性名称，ps[p]为对应属性的值
+                        if(ps [ p ] == "EPSG:4326" || ps [ p ] == "EPSG:900913")
+                        {
+                            this.myProjectionCodeName = p;
+                            break;
+                        }
+                    }
+                }
+            }
+
+
             var tileUrl = layerUrl;
 
-            //由于本身4326的图转成3857时90度转后会多出一部分，起始点不同，所以不能用x,y方式出图
-            //同样本身是3857的图转成4326后上下只有85度左右，少了5度，起始点不同，也不能用x,y方式出图
-            //获取map上的投影系
-            if(this.tmaps.projectionCode == "EPSG:4326")
+            if(this.tmaps[this.myProjectionCodeName] == "EPSG:4326")
             {
                 tileUrl +="&scale=" +this.scales4326[z];
                 tileUrl += "&prjCoordSys={\"epsgCode\":4326}";
@@ -111,7 +135,7 @@ SuperMap.Web.iConnector.Tianditu.getLayer = function(url,options){
                 tileUrl+= "&center={\"x\":" + centerX+",\"y\":" + centerY + "}" ;
                 return tileUrl;
             }
-            else if(this.tmaps.projectionCode == "EPSG:900913")
+            else if(this.tmaps[this.myProjectionCodeName] == "EPSG:900913")
             {
                 var po = Math.pow(2,z);
                 x-=po/2;

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no">
+    <meta charset="utf-8">
+    <title>TransferSuperMapPoint</title>
+    <script language="javascript" src="http://app.mapabc.com/apis?t=javascriptmap&v=3.1.1&key=b0a7db0b3a30f944a21c3682064dc70ef5b738b062f6479a5eca39725798b1ee300bd8d5de3a4ae3"></script>
+    <script src="../SuperMap.js"></script>
+    <script src="iConnectorMapABC.js"></script>
+    <script>
+        var mapObj,
+                url="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
+        function init() {
+            var opt = {
+                center: new MMap.LngLat(116.39674135,39.91713004),//设置地图中心点
+                level: 3,//初始地图缩放级别
+                zooms:[3,17]
+            }
+            mapObj = new MMap.Map("iCenter",opt);
+        }
+        function queryBySQL() {
+
+            var queryParam, queryBySQLParams, queryBySQLService;
+            queryParam = new SuperMap.REST.FilterParameter({
+                name: "Countries@World.1",
+                attributeFilter: "Pop_1994>1000000000 and SmArea>900"
+            });
+            queryBySQLParams = new SuperMap.REST.QueryBySQLParameters({
+                queryParams: [queryParam]
+            });
+            queryBySQLService = new SuperMap.REST.QueryBySQLService(url, {
+                eventListeners: {"processCompleted": processCompleted, "processFailed": processFailed}});
+            queryBySQLService.processAsync(queryBySQLParams);
+        }
+        function processCompleted(queryEventArgs) {
+            var i, j, feature,
+                    result = queryEventArgs.result;
+            if (result && result.recordsets) {
+                for (i=0; i<result.recordsets.length; i++) {
+                    if (result.recordsets[i].features) {
+                        for (j=0; j<result.recordsets[i].features.length; j++) {
+                            feature = result.recordsets[i].features[j];
+                            var polygon = feature.geometry;
+                            var gpsPoints = [];
+                            for(var k = 0;k<polygon.components.length;)//k++)
+                            {
+                                var linearRing = polygon.components[k];
+                                for(var n = 0;n<linearRing.components.length;)//n++)
+                                {
+                                    var point =  linearRing.components[n];
+
+                                    //GPS坐标
+                                    gpsPoints.push(new SuperMap.Geometry.Point(point.x,point.y));
+
+                                    n = n+20
+                                    //break;
+                                }
+                                k = k+5;
+                                break;
+                            }
+                            linearRings = new SuperMap.Geometry.LinearRing(gpsPoints);
+                            var    region = new SuperMap.Geometry.Polygon([linearRings]);
+                            var regions = SuperMap.Web.iConnector.MapABC.transferPolygon([region],new SuperMap.Projection("EPSG:4326"));
+                                    mapObj.addOverlays(regions[0]);
+                        }
+                    }
+                }
+            }
+        }
+        function processFailed(e) {
+            alert(e.error.errorMsg);
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="iCenter" style="width: 800px;height: 500px"></div>
+<input type="button" onclick="queryBySQL()" value="查询" >
+</body>
+</html>

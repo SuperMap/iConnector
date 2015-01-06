@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+    <meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+    <title>MapABC地图展示</title>
+    <script type="text/javascript"src="http://apis.mapabc.com/webapi/auth.json?t=javascriptmap&v=3.1.1&key=b0a7db0b3a30f944a21c3682064dc70ef5b738b062f6479a5eca39725798b1ee300bd8d5de3a4ae3"></script>
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="iConnectorMapABC.js"></script>
+    <script type="text/javascript">
+        var mapObj;
+        var url="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
+        function mapInit() {
+            //地图初始化参数设置
+            var opt = {
+                center: new MMap.LngLat(116.397428, 39.90923),//设置地图中心点
+                level: 3,//初始地图缩放级别
+               zooms:[3,6]//地图缩放级别范围
+            };
+            mapObj = new MMap.Map("map",opt);
+        }
+        //生成点密度专题图
+        function addThemeDotDensity()
+        {
+               //创建制作点密度专题图服务类
+               var themeService = new SuperMap.REST.ThemeService(url, {eventListeners:{"processCompleted": themeCompleted, "processFailed": themeFailed}}),
+                    dotStyle = new SuperMap.REST.ServerStyle({
+                        markerSize: 3,
+                        markerSymbolID: 12
+                    }),
+                    themeDotDensity = new SuperMap.REST.ThemeDotDensity({
+                        dotExpression: "Pop_1994",
+                        value: 5000000,
+                        style: dotStyle
+                    }),
+                    themeParameters = new SuperMap.REST.ThemeParameters({
+                        themes: [themeDotDensity],
+                        datasetNames: ["Countries"],
+                        dataSourceNames: ["World"]
+                    });
+             //向iserver发送请求
+             themeService.processAsync(themeParameters);
+        }
+        //生成专题图后将其叠加到 openstreetmap 地图上面
+        function themeCompleted(themeEventArgs) {
+            if(themeEventArgs.result.resourceInfo.id) {
+                var canvasTiles =  SuperMap.Web.iConnector.MapABC.getLayer(url,{layersID:themeEventArgs.result.resourceInfo.id});
+                mapObj.addLayer(canvasTiles);
+            }
+        }
+        function themeFailed(serviceFailedEventArgs) {
+            alert(serviceFailedEventArgs.error.errorMsg);
+        }
+    </script>
+</head>
+<body onload="mapInit();">
+<div id="map" style="width: 800px;height: 500px"></div>
+<input type="button" value="创建点密度专题图" onclick="addThemeDotDensity()" />
+</body>
+</html>
