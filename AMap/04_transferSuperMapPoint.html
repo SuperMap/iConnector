@@ -7,11 +7,11 @@
     <link rel="stylesheet" type="text/css" href="http://developer.amap.com/Public/css/demo.Default.css" />
     <script language="javascript" src="http://webapi.amap.com/maps?v=1.2&key=14bf161ae4e52fe25a972f6b7c9c0980"></script>
     <script src="../SuperMap.js"></script>
-    <script src="iConnectorGaoDe.js"></script>
+    <script src="iConnectorAMap.js"></script>
     <script>
         function init() {
             var poi = {x:116.39674135,y:39.91713004};
-            var myLatlng = SuperMap.Web.iConnector.GaoDe.transferPoint([poi],new SuperMap.Projection("EPSG:4326"))[0];
+            var myLatlng = SuperMap.Web.iConnector.AMap.transferPoint([poi],new SuperMap.Projection("EPSG:4326"))[0];
             var opt = {
                 center: new AMap.LngLat(116.39674135,39.91713004),//设置地图中心点
                 level: 4,//初始地图缩放级别

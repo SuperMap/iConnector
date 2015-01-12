@@ -17,23 +17,23 @@ if(SuperMap.Web.iConnector == undefined )
 }
 /**
  * Class:
- * Gaode适配器类
+ * AMap适配器类
  * @constructor
  */
-SuperMap.Web.iConnector.GaoDe = function(){
+SuperMap.Web.iConnector.AMap = function(){
 
 }
 /**
  *  APIMethod:
- *  创建GaoDe的扩展图层，这里的图层中切片的来源为iserver服务器（只能是3857的地图）
+ *  创建AMap的扩展图层，这里的图层中切片的来源为iserver服务器（只能是3857的地图）
  * @param url  {String}  地图服务的url地址，如：“http://localhost:8090/iserver/services/map-china400/rest/maps/China”
  * @param options 可选的参数
  * transparent - {Boolean} 设置切片是否透明，默认为true
  * cacheEnabled - {Boolean} 设置是否使用缓存，默认为false
  * layersID - {String} 设置临时图层的id，一般用于专题图的叠加使用
- * @returns {Object} 返回GaoDe地图的扩展图层对象
+ * @returns {Object} 返回AMap地图的扩展图层对象
  */
-SuperMap.Web.iConnector.GaoDe.getLayer = function(url,options){
+SuperMap.Web.iConnector.AMap.getLayer = function(url,options){
     if(url == undefined)
     {
         return;
@@ -51,7 +51,7 @@ SuperMap.Web.iConnector.GaoDe.getLayer = function(url,options){
     }
     layerUrl += "&transparent=" + transparent;
 
-    //是否是否使用缓存
+    //是否使用缓存
     var cacheEnabled = false;
     if(options && options.cacheEnabled !=undefined)
     {
@@ -71,7 +71,6 @@ SuperMap.Web.iConnector.GaoDe.getLayer = function(url,options){
             projection="4326";
         }
     }
-    //计算分辨率和比例尺
     //计算分辨率和比例尺
     var resLen = 17;
     var resStart = 0;
@@ -149,13 +148,13 @@ SuperMap.Web.iConnector.GaoDe.getLayer = function(url,options){
  *                          new SuperMap.LonLat(116.1,38.4)
  *                          ];
  * 4、var points = [
- *                          new AMap.LngLat(116.404, 39.915)，
+ *                          new AMap.LngLat(116.404, 39.915),
  *                         new AMap.LngLat(39.9,116.35)
  *                          ];
  * @param projection  {SuperMap.Projection} 待转换点的投影系（数组里面的所有点投影系都必须是统一的），默认为4326.
  * @returns {Array} Amap.LatLng对象的数组
  */
-SuperMap.Web.iConnector.GaoDe.transferPoint = function(array,projection){
+SuperMap.Web.iConnector.AMap.transferPoint = function(array,projection){
 
     if((typeof array) == "object" && array != null && array.constructor == Array)
     {
@@ -206,7 +205,7 @@ SuperMap.Web.iConnector.GaoDe.transferPoint = function(array,projection){
  * @param projection  {SuperMap.Projection} 需要转换的线的坐标系
  * @returns {Array} 返回AMap.Polyline对象的数组
  */
-SuperMap.Web.iConnector.GaoDe.transferLine = function(array,projection){
+SuperMap.Web.iConnector.AMap.transferLine = function(array,projection){
     if((typeof array) == "object" && array != null && array.constructor == Array)
     {
         var pro = projection || new SuperMap.Projection("EPSG:4326");
@@ -218,13 +217,13 @@ SuperMap.Web.iConnector.GaoDe.transferLine = function(array,projection){
             //支持supermap的LineString
             if(array[i].CLASS_NAME && array[i].CLASS_NAME == "SuperMap.Geometry.LineString")
             {
-                var points = SuperMap.Web.iConnector.GaoDe.transferPoint(array[i].components,pro);
+                var points = SuperMap.Web.iConnector.AMap.transferPoint(array[i].components,pro);
                 line = new AMap.Polyline({path:points,strokeColor:"#87CEFF"});
             }
             //支持AMap.Polyline的对象
             else if(array[i].constructor == AMap.Polyline)
             {
-                var points = SuperMap.Web.iConnector.GaoDe.transferPoint(array[i].getLngLats(),pro);
+                var points = SuperMap.Web.iConnector.AMap.transferPoint(array[i].getLngLats(),pro);
                 line = new  AMap.Polyline({path:points,strokeColor:"#87CEFF"});
             }
             lines.push(line);
@@ -254,7 +253,7 @@ SuperMap.Web.iConnector.GaoDe.transferLine = function(array,projection){
  * @param projection {SuperMap.Projection} 需要转换的多边形的坐标系
  * @returns {Array} 返回AMap.Polygon对象的数组
  */
-SuperMap.Web.iConnector.GaoDe.transferPolygon = function(array,projection){
+SuperMap.Web.iConnector.AMap.transferPolygon = function(array,projection){
     if((typeof array) == "object" && array != null && array.constructor == Array)
     {
         var pro = projection || new SuperMap.Projection("EPSG:4326");
@@ -266,14 +265,14 @@ SuperMap.Web.iConnector.GaoDe.transferPolygon = function(array,projection){
             //支持supermap的Polygon
             if(array[i].CLASS_NAME && array[i].CLASS_NAME == "SuperMap.Geometry.Polygon")
             {
-                var points = SuperMap.Web.iConnector.GaoDe.transferPoint(array[i].getVertices(false),pro);
+                var points = SuperMap.Web.iConnector.AMap.transferPoint(array[i].getVertices(false),pro);
                 polygon = new AMap.Polygon({path:points, fillColor:"#87CEFF"});
             }
 
             //支持AMap.Polygon的对象
             else if(array[i].constructor  == AMap.Polygon)
             {
-                var points = SuperMap.Web.iConnector.GaoDe.transferPoint(array[i].getLngLats(),pro);
+                var points = SuperMap.Web.iConnector.AMap.transferPoint(array[i].getLngLats(),pro);
                 polygon = new AMap.Polygon({path:points,strokeColor:"#87CEFF"});
             }
 

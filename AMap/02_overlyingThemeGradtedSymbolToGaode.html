@@ -6,7 +6,7 @@
     <link rel="stylesheet" type="text/css" href="http://developer.amap.com/Public/css/demo.Default.css" />
     <script language="javascript" src="http://webapi.amap.com/maps?v=1.2&key=14bf161ae4e52fe25a972f6b7c9c0980"></script>
     <script src="../SuperMap.js"></script>
-    <script src="iConnectorGaoDe.js"></script>
+    <script src="iConnectorAMap.js"></script>
     <script type="text/javascript">
         var map,layer,
                 url = "http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China";
@@ -49,7 +49,7 @@
         function themeCompleted(themeEventArgs) {
             if(themeEventArgs.result.resourceInfo.id) {
                 var id =  themeEventArgs.result.resourceInfo.id;
-                var tileLayer = SuperMap.Web.iConnector.GaoDe.getLayer(url,{layersID:id});
+                var tileLayer = SuperMap.Web.iConnector.AMap.getLayer(url,{layersID:id});
 
                 map.addLayer(tileLayer);
             }

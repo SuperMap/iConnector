@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="http://developer.amap.com/Public/css/demo.Default.css" />
     <script language="javascript" src="http://webapi.amap.com/maps?v=1.2&key=14bf161ae4e52fe25a972f6b7c9c0980"></script>
     <script src="../SuperMap.js"></script>
-    <script src="iConnectorGaoDe.js"></script>
+    <script src="iConnectorAMap.js"></script>
     <script type="text/javascript">
         var map, regions,url ="http://support.supermap.com.cn:8090/iserver/services/spatialanalyst-changchun/restjsr/spatialanalyst";
         var points = [
@@ -23,7 +23,7 @@
                 zooms:[4,17]
             }
             map = new AMap.Map("map",opt);
-            var gLine = SuperMap.Web.iConnector.GaoDe.transferLine([polyLine])[0];
+            var gLine = SuperMap.Web.iConnector.AMap.transferLine([polyLine])[0];
             map.addOverlays(gLine);
         }
         //缓冲区分析
@@ -61,7 +61,7 @@
         function bufferAnalystCompleted(BufferAnalystEventArgs)
         {
             var bufferResultGeometry = BufferAnalystEventArgs.result.resultGeometry;
-            regions = SuperMap.Web.iConnector.GaoDe.transferPolygon([bufferResultGeometry]);
+            regions = SuperMap.Web.iConnector.AMap.transferPolygon([bufferResultGeometry]);
             map.addOverlays(regions[0]);   //生成的缓冲区加载到地图
         }
     </script>
