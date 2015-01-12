@@ -59,7 +59,7 @@ SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三
 ![original_THmC_4b6f000174941190](images/bufferQuery_Tianditu.jpg)
 
 8、如下是在AMap上面进行点密度专题图
-![original_THmC_4b6f000174941190](images/overlyingThemeDotDensityToGaoDe.jpg)
+![original_THmC_4b6f000174941190](images/overlyingThemeDotDensityToAMap.jpg)
 
 9、如下是在MapABC上面通过SQL查询iserver上的中国边界
 ![original_THmC_4b6f000174941190](images/transferSuperMapPolyLine_MapABC.jpg)
