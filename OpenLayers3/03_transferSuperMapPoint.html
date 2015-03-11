@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>transferSuperMapPoint</title>
+    <link rel="stylesheet" href="ol.css" type="text/css">
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="ol-debug.js" ></script>
+    <script type="text/javascript" src="iConnectorOpenLayers3.js"></script>
+    <script type="text/javascript">
+        var map,vector, url="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
+        function init(){
+            var point= new SuperMap.Geometry.Point(116.3948,39.9173);
+            var myPoint = SuperMap.Web.iConnector.OpenLayers3.transferPoint([point])[0];
+            var feature =
+                new ol.Feature({
+                    'geometry':myPoint
+                });
+
+            var style =
+                new ol.style.Style({
+                    image: new ol.style.Circle({
+                        radius: 5,
+                        fill: new ol.style.Fill({color: '#FF0000'}),
+                        stroke: new ol.style.Stroke({color: '#bada55', width: 1})
+                    })
+                }) ;
+            var vectorSource= new ol.source.Vector({  features:[feature]})
+            vector = new ol.layer.Vector({
+                source:  vectorSource,
+                style: style
+            }) ;
+            map = new ol.Map({
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.TileWMS({
+                            url: 'http://demo.boundlessgeo.com/geoserver/wms',
+                            params: {
+                                'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
+                            }
+                        })
+                    }) ,
+                   vector
+                ],
+                target: 'map' ,
+                controls: ol.control.defaults().extend([
+                    new ol.control.ScaleLine({
+                    })
+                ]
+                ),
+                view: new ol.View({
+                    projection:"EPSG:4326" ,
+                    center: [0,0],
+                    zoom: 2
+                })
+            });
+        }
+
+    </script>
+</head>
+<body onload="init()">
+  <div id="map"style="width: 1000px; height: 600px"></div>
+</body>
+</html>

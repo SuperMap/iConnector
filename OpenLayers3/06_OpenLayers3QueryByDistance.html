@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>OpenLayers3距离查询</title>
+    <link rel="stylesheet" href="ol.css" type="text/css">
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="ol-debug.js" ></script>
+    <script type="text/javascript" src="iConnectorOpenLayers3.js"></script>
+    <script>
+           var map,url="http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
+        function init(){
+            map = new ol.Map({
+                layers:[new ol.layer.Tile({
+                    source: new ol.source.TileWMS({
+                        url: 'http://demo.boundlessgeo.com/geoserver/wms',
+                        params: {
+                            'LAYERS': 'ne:NE1_HR_LC_SR_W_DR'
+                        }
+                    })
+                }) ],
+                target: 'map' ,
+                controls: ol.control.defaults().extend([
+                    new ol.control.ScaleLine({
+                    })
+                ]
+                ),
+                view: new ol.View({
+                    projection:"EPSG:4326" ,
+                    center: [0,0],
+                    zoom:2
+                })
+            });
+            var point = new SuperMap.Geometry.Point(116.1,39.8);
+            var myLatlng = SuperMap.Web.iConnector.OpenLayers3.transferPoint([point])[0];
+            var style=new ol.style.Style({
+                image: new ol.style.Icon( ({
+                    anchor: [0.5, 46],
+                    anchorXUnits: 'fraction',
+                    anchorYUnits: 'pixels',
+                    opacity: 0.75,
+                    src: '../images/marker.png'
+                }))
+            });
+            var feature= new ol.Feature({
+                'geometry':myLatlng
+            });
+            var vectorSource= new ol.source.Vector({  features:[feature]})
+            vector = new ol.layer.Vector({
+                source:  vectorSource,
+                style: style
+            }) ;
+            map.addLayer(vector);
+
+        }
+           //距离查询
+           function queryByDistance() {
+               var centerPoint = new SuperMap.Geometry.Point(116.404,39.915);
+               var queryByDistanceParams = new SuperMap.REST.QueryByDistanceParameters({
+                   queryParams: new Array(new SuperMap.REST.FilterParameter({name: "Capitals@World.1"})),
+                   returnContent: true,
+                   distance: 30,
+                   geometry: centerPoint
+               });
+
+               var queryByDistanceService = new SuperMap.REST.QueryByDistanceService(url);
+               queryByDistanceService.events.on({
+                   "processCompleted": processCompleted,
+                   "processFailed": processFailed
+               });
+               queryByDistanceService.processAsync(queryByDistanceParams);
+           }
+           function processCompleted(queryEventArgs) {
+               var i, j, result = queryEventArgs.result;
+               var features = [];
+               for(i = 0;i < result.recordsets.length; i++) {
+                   for(j = 0; j < result.recordsets[i].features.length; j++) {
+                       var point = result.recordsets[i].features[j].geometry;
+
+                       var resultPoints=SuperMap.Web.iConnector.OpenLayers3.transferPoint([point])[0];
+                       var pointFeature=new ol.Feature({
+                           'geometry':resultPoints
+                       });
+                       features.push(pointFeature);
+                   }
+
+               }
+
+               var style=new ol.style.Style({
+                   image: new ol.style.Icon( ({
+                       anchor: [0.5, 46],
+                       anchorXUnits: 'fraction',
+                       anchorYUnits: 'pixels',
+                       opacity: 0.75,
+                       src: '../images/markerbig.png'
+                   }))
+               });
+               var vectorSourceResult= new ol.source.Vector({  features:features})
+               vectorResult = new ol.layer.Vector({
+                   source:  vectorSourceResult,
+                   style: style
+               }) ;
+               map.addLayer(vectorResult);
+
+           }
+           function processFailed(e) {
+               alert(e.error.errorMsg);
+           }
+    </script>
+</head>
+<body onload="init()">
+<div id="map"style="width: 1000px; height: 600px"></div>
+<input type ="button" value ="距离查询" Onclick = "queryByDistance()"/>
+</body>
+</html>

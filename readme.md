@@ -1,6 +1,6 @@
 ### 一、简介
 
-SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三方地图JavaScript开发的适配器工具，此处面对的是以第三方地图JavaScript为基础，并且又想加入SuperMap iServer强大的功能的用户。现第三方API支持百度、天地图、Google、Leaflet、ArcGIS、MapBox、CartoDB、MapABC、Polymaps和AMap。
+SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三方地图JavaScript开发的适配器工具，此处面对的是以第三方地图JavaScript为基础，并且又想加入SuperMap iServer强大的功能的用户。现第三方API支持百度、天地图、Google、Leaflet、ArcGIS、MapBox、CartoDB、MapABC、Polymaps、AMap和OpenLayer3。
 
 ### 二、特性描述
 
@@ -15,7 +15,7 @@ SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三
 
 ### 三、使用说明
 
-提供了针对百度、天地图、Google、Leaflet和ArcGIS的不同接口，详见：
+提供了针对百度、天地图、Google、Leaflet、ArcGIS等的不同接口，详见：
 1、iConnector for Baidu help.docx
 2、iConnector for Tianditu help.docx
 3、iConnector for Google help.docx
@@ -26,6 +26,7 @@ SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三
 8、iConnector for CartoDB help.docx
 9、iConnector for Polymaps help.docx
 10、iConnector for AMap help.docx
+11、iConnector for OpenLayers3 help.docx
 由于范例访问的服务器非本地服务器，所以可以直接运行范例，范例中使用的服务器仅支持范例使用。
 
 ### 四、许可授权
@@ -72,6 +73,9 @@ SuperMap.Web.iConnector 是一款基于SuperMap iClient for JavaScript 和第三
 
 12、如下是在Polymaps地图上面进行点密度专题图
 ![original_THmC_4b6f000174941190](images/overlyingThemeDotDensityToPolymaps.jpg)
+
+13、如下是在OpenLayer3地图上面进行距离查询
+![original_THmC_4b6f000174941190](images/openLayers3QueryByDistance.jpg)
 
 
 

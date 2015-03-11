@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>叠加China地图</title>
+    <link rel="stylesheet" href="ol.css" type="text/css">
+    <script type="text/javascript" src="../SuperMap.js"></script>
+    <script type="text/javascript" src="ol-debug.js" ></script>
+    <script type="text/javascript" src="iConnectorOpenLayers3.js"></script>
+    <script type="text/javascript">
+        var map,url = "http://support.supermap.com.cn:8090/iserver/services/map-china400/rest/maps/China";
+        function init(){
+            map = new ol.Map({
+                layers: [
+                    new ol.layer.Tile({
+                        source: new ol.source.OSM({})
+                    }) ,
+                    SuperMap.Web.iConnector.OpenLayers3.getLayer(url)
+                ],
+                target: 'map' ,
+                controls: ol.control.defaults().extend([
+                    new ol.control.ScaleLine({
+                    })]
+                ),
+                view: new ol.View({
+                    projection:"EPSG:3857" ,
+                    center: [0,0],
+                    zoom: 1
+                })
+            });
+        }
+    </script>
+</head>
+<body onload="init()">
+<div id="map" class="map"style="width:800px;height:500px; border:1px solid #3473b7;"></div>
+</body>
+</html>
