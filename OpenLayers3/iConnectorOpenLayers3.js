@@ -64,6 +64,14 @@ SuperMap.Web.iConnector.OpenLayers3.getLayer = function(url,options){
     {
         layerUrl += "&layersID=" +options.layersID;
     }
+    //如果有pro，并且只能是4326或者3857的地图。
+    var pro="3857";
+    if(options&&options.pro){
+        if(options.pro==="4326"){
+            pro="4326";
+        }
+    }
+    layerUrl+="&projection="+pro;
     //计算分辨率和比例尺
     var resLen = 17;
     var resStart = 0;
@@ -94,11 +102,12 @@ SuperMap.Web.iConnector.OpenLayers3.getLayer = function(url,options){
         tileLayer.scales=scales4326;
 
     function getSource(){
+
         var tileUrl;
         var source= new ol.source.TileImage({
               tileUrlFunction:function(tileCoord, pixelRatio, projection){
                   var z=tileCoord[0], x= tileCoord[1],y =tileCoord[2];
-                  if(projection.code_=="EPSG:3857"){
+                  if(pro==="3857"){
                       var po = Math.pow(2,z-1);
                       x-=po;
                       y-=po;
@@ -110,7 +119,7 @@ SuperMap.Web.iConnector.OpenLayers3.getLayer = function(url,options){
                       tileUrl +="&scale=" +scales3857[z];
 
                   }
-                  else{
+                  else if(pro==="4326"){
                       x-=Math.pow(2,z-1);
                       y-= Math.pow(2,z-2);
                       var left = x*256*resolutions4326[z];
@@ -121,7 +130,7 @@ SuperMap.Web.iConnector.OpenLayers3.getLayer = function(url,options){
                       tileUrl +="&scale=" +scales4326[z];
 
                   }
-                  var epsg=projection.code_==="EPSG:3857"?3857:4326;
+                  var epsg=pro==="3857"?3857:4326;
                   tileUrl += "&prjCoordSys={\"epsgCode\":"+epsg+"}";
              return tileUrl;
               }
