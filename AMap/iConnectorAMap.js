@@ -1,10 +1,3 @@
-/**
- * Created with JetBrains WebStorm.
- * User: CC
- * Date: 14-12-30
- * Time: 下午5:09
- * To change this template use File | Settings | File Templates.
- */
 //判定一下是否存在了SuperMap.Web，如果没有则初始化一个
 if(SuperMap.Web == undefined )
 {
@@ -16,22 +9,28 @@ if(SuperMap.Web.iConnector == undefined )
     SuperMap.Web.iConnector = new Object();
 }
 /**
- * Class:
+ * Class: SuperMap.Web.iConnector.AMap
  * AMap适配器类
- * @constructor
  */
 SuperMap.Web.iConnector.AMap = function(){
 
-}
+};
+
 /**
- *  APIMethod:
+ *  APIMethod: getLayer
  *  创建AMap的扩展图层，这里的图层中切片的来源为iserver服务器（只能是3857的地图）
- * @param url  {String}  地图服务的url地址，如：“http://localhost:8090/iserver/services/map-china400/rest/maps/China”
- * @param options 可选的参数
- * transparent - {Boolean} 设置切片是否透明，默认为true
- * cacheEnabled - {Boolean} 设置是否使用缓存，默认为false
- * layersID - {String} 设置临时图层的id，一般用于专题图的叠加使用
- * @returns {Object} 返回AMap地图的扩展图层对象
+ *
+ *  Parameters:
+ *  url - {String}  地图服务的url地址，如：“http://localhost:8090/iserver/services/map-china400/rest/maps/China”
+ *  options - {Object} 可选的参数
+ *
+ *  Allowed options properties:
+ *  transparent - {Boolean} 设置切片是否透明，默认为true
+ *  cacheEnabled - {Boolean} 设置是否使用缓存，默认为false
+ *  layersID - {String} 设置临时图层的id，一般用于专题图的叠加使用
+ *
+ *  Returns:
+ *  {Object} 返回AMap地图的扩展图层对象
  */
 SuperMap.Web.iConnector.AMap.getLayer = function(url,options){
     if(url == undefined)
@@ -132,27 +131,33 @@ SuperMap.Web.iConnector.AMap.getLayer = function(url,options){
     return tileLayer;
 }
 /**
- * APIMethod:
- * 将其他坐标系下的点转换为高德地图的点
- * @param array 点数组，支持四种形式的点：
- * 1、var points = [
+ * APIMethod: transferPoint
+ * 将其他坐标系下的点转换为高德地图的点。
+ * Parameters:
+ * points - {Array} 点数组，支持四种形式的点，如例子所示。
+ * projection - {SuperMap.Projection} 待转换点的投影系（数组里面的所有点投影系都必须是统一的），默认为4326.
+ *
+ * Examples:
+ * (start code)
+ * var points = [
  *                          {x:116.1,y:38.9},
  *                          {x:114.1,y:34.1}
  *                          ];
- * 2、var points = [
+ * var points = [
  *                          new SuperMap.Geometry.Point(116.1,38.9),
  *                          new SuperMap.Geometry.Point(116.1,38.9)
  *                          ];
- * 3、var points = [
+ * var points = [
  *                          new SuperMap.LonLat(116.1,38.9),
  *                          new SuperMap.LonLat(116.1,38.4)
  *                          ];
- * 4、var points = [
+ * var points = [
  *                          new AMap.LngLat(116.404, 39.915),
  *                         new AMap.LngLat(39.9,116.35)
  *                          ];
- * @param projection  {SuperMap.Projection} 待转换点的投影系（数组里面的所有点投影系都必须是统一的），默认为4326.
- * @returns {Array} Amap.LatLng对象的数组
+ *  (end)
+ *  Returns:
+ *  {Array} Amap.LatLng对象的数组
  */
 SuperMap.Web.iConnector.AMap.transferPoint = function(array,projection){
 
@@ -191,18 +196,23 @@ SuperMap.Web.iConnector.AMap.transferPoint = function(array,projection){
     }
 }
 /**
- * APIMethod:
+ * APIMethod: transferLine
  * 将其他坐标系下的线数组转换为高德地图支持的线数组
- * @param array 线数组，支持两种形式
- * 1、var lines = [new SuperMap.Geometry.LineString(
+ * Parameters:
+ * lines - {Array} 线数组，支持两种形式。
+ * projection - {SuperMap.Projection} 需要转换的线的坐标系。
+ *
+ * Examples:
+ * (start code)
+ * var lines = [new SuperMap.Geometry.LineString(
  *                          new SuperMap.Geometry.Point(116.1,38.9),
  *                          new SuperMap.Geometry.Point(116.1,38.9)
  *                          )];
- * 2、var lines = [new   AMap.Polyline(
+ * var lines = [new   AMap.Polyline(
  *                           new AMap.LngLat(116.3 ,39.9)
  *                           new AMap.LngLat(116.3 ,38.9)
  *                          )];
- * @param projection  {SuperMap.Projection} 需要转换的线的坐标系
+ * (end)
  * @returns {Array} 返回AMap.Polyline对象的数组
  */
 SuperMap.Web.iConnector.AMap.transferLine = function(array,projection){
@@ -232,10 +242,16 @@ SuperMap.Web.iConnector.AMap.transferLine = function(array,projection){
     }
 }
 /**
- * APIMethod:
+ * APIMethod: transferPolygon
  * 将其他坐标系下的多边形数组转换为高德地图支持的多边形数组
- * @param array 多边形数组，支持两种形式：
- * 1、var polygons = [new SuperMap.Geometry.Polygon(
+ *
+ * Parameters:
+ * polygons - {Array} 多边形数组，支持两种形式：
+ * projection - {SuperMap.Projection} 需要转换的多边形的坐标系
+ *
+ * Examples:
+ * (start code)
+ * var polygons = [new SuperMap.Geometry.Polygon(
  *                                [new SuperMap.Geometry.LinearRing(
  *                                    new SuperMap.Geometry.Point(116.3786889372559,39.90762965106183),
  *                                    new SuperMap.Geometry.Point(116.38632786853032,39.90795884517671),
@@ -244,14 +260,16 @@ SuperMap.Web.iConnector.AMap.transferLine = function(array,projection){
  *                                  )
  *                           ]
  *                        )];
- * 2、var polygons = [ new AMap.Polygon(
+ * var polygons = [ new AMap.Polygon(
  *                                   new AMap.LngLat(116.3786889372559,39.90762965106183),
  *                                   new AMap.LngLat(116.38632786853032,39.90795884517671),
  *                                  new AMap.LngLat(116.38534009082035,39.897432133833574),
  *                                  new AMap.LngLat(116.37624058825688,39.89789300648029)
  *                          )];
- * @param projection {SuperMap.Projection} 需要转换的多边形的坐标系
- * @returns {Array} 返回AMap.Polygon对象的数组
+ *  (end)
+ *
+ *  Returns:
+ *  {Array} 返回AMap.Polygon对象的数组
  */
 SuperMap.Web.iConnector.AMap.transferPolygon = function(array,projection){
     if((typeof array) == "object" && array != null && array.constructor == Array)

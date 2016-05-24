@@ -1,3 +1,4 @@
+//TODO 修改注释成标准的格式
 //判定一下是否存在了SuperMap.Web，如果没有则初始化一个
 if(SuperMap.Web == undefined )
 {
@@ -9,15 +10,14 @@ if(SuperMap.Web.iConnector == undefined )
     SuperMap.Web.iConnector = new Object();
 }
 /**
- * Class:
+ * Class: SuperMap.Web.iConnector.OpenLayers3
  * OpenLayers3适配器类
- * @constructor
  */
 SuperMap.Web.iConnector.OpenLayers3 = function(){
 
 }
 /**
- *  APIMethod:
+ *  APIMethod: getLayer
  *  创建OpenLayers3的图层new ol.Layer.Tile，这里的图层中切片的来源为iserver服务器（支持3857的地图和4326的地图）
  * @param url  {String}  地图服务的url地址，如：“http://localhost:8090/iserver/services/map-china400/rest/maps/China”
  * @param options 可选的参数

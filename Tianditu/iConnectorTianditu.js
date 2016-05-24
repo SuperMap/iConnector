@@ -1,10 +1,4 @@
-﻿/**
- * Created with JetBrains WebStorm.
- * User: liuyayun
- * Date: 13-5-27
- * Time: 上午9:56
- * To change this template use File | Settings | File Templates.
- */
+﻿//TODO 修改注释成标准的格式
 //判定一下是否存在了SuperMap.Web，如果没有则初始化一个
 if(SuperMap.Web == undefined )
 {
