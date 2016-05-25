@@ -59,10 +59,10 @@ SuperMap.Web.iConnector.Leaflet.getLayer = function(url,options){
         layerUrl += "&layersID=" +options.layersID;
     }
     //如果有projection，并且只能是4326或者3857的地图。
-    var projection="3857";
+    var projection="4326";
     if(options&&options.projection){
-           if(options.projection==="4326"){
-               projection="4326";
+           if(options.projection==="3857"){
+               projection="3857";
            }
     }
     layerUrl+="&projection="+projection;
@@ -300,7 +300,7 @@ SuperMap.Web.iConnector.Leaflet.transferPolygon = function(array,projection){
         {
             var polygon;
             //支持supermap的Polygon
-            if(array[i].CLASS_NAME && array[i].CLASS_NAME == "SuperMap.Geometry.Polygon")
+            if(array[i].CLASS_NAME && array[i].CLASS_NAME === "SuperMap.Geometry.Polygon" || array[i].CLASS_NAME === "SuperMap.Geometry.MultiPolygon")
             {
                 var points = SuperMap.Web.iConnector.Leaflet.transferPoint(array[i].getVertices(false),pro);
                 polygon = new L.Polygon(points);

@@ -3,19 +3,21 @@
 <html>
 <head>
     <title>OverlyingThemeLabelToOpenStreetMap</title>
-    <link rel="stylesheet" href="http://leafletjs.com/dist/leaflet.css" />
-    <script src="http://leafletjs.com/dist/leaflet.js"></script>
+    <link rel="stylesheet" href="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.css" />
+    <script src="http://cdn.leafletjs.com/leaflet/v0.7.7/leaflet.js"></script>
     <script type="text/javascript" src="../SuperMap.js"></script>
     <script type="text/javascript" src="iConnectorLeaflet.js"></script>
     <script type="text/javascript">
         var map,url = "http://support.supermap.com.cn:8090/iserver/services/map-world/rest/maps/World";
         function init()
         {
-            map = L.map('map').setView([51.505, -0.09], 1);
-            L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-                attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="http://cloudmade.com">CloudMade</a>',
-                maxZoom: 18
-            }).addTo(map);
+            map = L.map('map',{
+                center: [0, 0],
+                zoom:2,
+                crs:L.CRS.EPSG4326
+            });
+            var  tileLayer=   SuperMap.Web.iConnector.Leaflet.getLayer(url,{projection:"4326"});
+            tileLayer.addTo(map);
 
         }
         function addThemeLabel() {
@@ -51,7 +53,7 @@
                     }),
                     themeLabelIteme3 = new SuperMap.REST.ThemeLabelItem({
                         start: 15000000,
-                        end:   30000000,
+                        end: 30000000,
                         style: style3
                     }),
 
@@ -67,12 +69,12 @@
                     }),
                     themeLabelIteme6 = new SuperMap.REST.ThemeLabelItem({
                         start: 109,
-                        end:   300,
+                        end: 300,
                         style: style3
                     }),
                     themeLabelOne = new SuperMap.REST.ThemeLabel({
                         labelExpression: "CAPITAL",
-                        rangeExpression: "SMID",
+                        rangeExpression: "SmID",
                         numericPrecision: 0,
                         items: [themeLabelIteme4, themeLabelIteme5, themeLabelIteme6]
                     }),
@@ -82,7 +84,7 @@
                         numericPrecision: 0,
                         items: [themeLabelIteme1, themeLabelIteme2, themeLabelIteme3]
                     }),
-            //创建矩阵标签元素
+//创建矩阵标签元素
                     LabelThemeCellOne=new SuperMap.REST.LabelThemeCell({
                         themeLabel: themeLabelOne
                     }),
@@ -95,7 +97,7 @@
                         fillOpaqueRate: 60,
                         lineWidth: 0.1
                     }),
-            //创建矩阵标签专题图
+//创建矩阵标签专题图
                     themeLabel = new SuperMap.REST.ThemeLabel({
                         matrixCells: [[LabelThemeCellOne],[LabelThemeCellTwo]],
                         background:new SuperMap.REST.ThemeLabelBackground({
