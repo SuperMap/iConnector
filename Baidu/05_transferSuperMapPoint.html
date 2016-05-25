@@ -49,25 +49,37 @@
                         feature = result.recordsets[i].features[j];
                         var polygon = feature.geometry;
                         var gpsPoints = [];
-                        for(var k = 0;k<polygon.components.length;)
-                        {
-                            var linearRing = polygon.components[k];
-                            for(var n = 0;n<linearRing.components.length;)
-                            {
-                                var point =  linearRing.components[n];
-
-                                //GPS坐标
-                                gpsPoints.push(new BMap.Point(point.x,point.y));
-                                //点太多，筛选部分
-                                n = n+20;
-                            }
-                            k = k+5;
-                            break;
-                        }
+                        getBdPoints(polygon,gpsPoints)
                         SuperMap.Web.iConnector.Baidu.transferPoint(gpsPoints,new SuperMap.Projection("EPSG:4326"),translateCallback);
                     }
                 }
             }
+        }
+    }
+
+    function getBdPoints(geometry,gpsPoints){
+        if(geometry.CLASS_NAME === 'SuperMap.Geometry.MultiPolygon' ||
+            geometry.CLASS_NAME === 'SuperMap.Geometry.MultiLineString' ||
+            geometry.CLASS_NAME === 'SuperMap.Geometry.MultiPoint'){
+            for(var i = 0,len = geometry.components.length;i<len;i++){
+                getBdPoints(geometry.components[i],gpsPoints);
+            }
+            return;
+        }
+        for(var k = 0;k<geometry.components.length;)
+        {
+            var linearRing = geometry.components[k];
+            for(var n = 0;n<linearRing.components.length;)
+            {
+                var point =  linearRing.components[n];
+
+                //GPS坐标
+                gpsPoints.push(new BMap.Point(point.x,point.y));
+                //点太多，筛选部分
+                n = n+20;
+            }
+            k = k+5;
+            break;
         }
     }
 

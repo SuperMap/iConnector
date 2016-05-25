@@ -48,29 +48,40 @@
                     for (j=0; j<result.recordsets[i].features.length; j++) {
                         feature = result.recordsets[i].features[j];
                         var polygon = feature.geometry;
-                        var gpsPoints = [];
-                        for(var k = 0;k<polygon.components.length;)
-                        {
-                            var linearRing = polygon.components[k];
-                            for(var n = 0;n<linearRing.components.length;)
-                            {
-                                var point =  linearRing.components[n];
-
-                                //GPS坐标
-                                gpsPoints.push(new SuperMap.Geometry.Point(point.x,point.y));
-
-                                n = n+20;
-                            }
-                            k = k+5;
-                            break;
-                        }
-
-                        var line =new SuperMap.Geometry.LineString(gpsPoints);
-                        SuperMap.Web.iConnector.Baidu.transferLine([line],new SuperMap.Projection("EPSG:4326"),translateCallback);
+                        getPoints(polygon);
                     }
                 }
             }
         }
+    }
+
+    function getPoints(geometry){
+        if(geometry.CLASS_NAME === 'SuperMap.Geometry.MultiPolygon' ||
+            geometry.CLASS_NAME === 'SuperMap.Geometry.MultiLineString' ||
+            geometry.CLASS_NAME === 'SuperMap.Geometry.MultiPoint'){
+            for(var i = 0,len = geometry.components.length;i<len;i++){
+                getPoints(geometry.components[i]);
+            }
+            return;
+        }
+        var gpsPoints = [];
+        for(var k = 0;k<geometry.components.length;)
+        {
+            var linearRing = geometry.components[k];
+            for(var n = 0;n<linearRing.components.length;)
+            {
+                var point =  linearRing.components[n];
+
+                //GPS坐标
+                gpsPoints.push(new SuperMap.Geometry.Point(point.x,point.y));
+
+                n = n+20;
+            }
+            k = k+5;
+            break;
+        }
+        var line =new SuperMap.Geometry.LineString(gpsPoints);
+        SuperMap.Web.iConnector.Baidu.transferLine([line],new SuperMap.Projection("EPSG:4326"),translateCallback);
     }
 
     function translateCallback(polyline){
