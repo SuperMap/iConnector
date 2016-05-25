@@ -40,10 +40,26 @@
                         for (j=0; j<result.recordsets[i].features.length; j++) {
                             feature = result.recordsets[i].features[j];
                             var polygon = feature.geometry;
-                            var gpsPoints = [];
-                            for(var k = 0;k<polygon.components.length;)//k++)
+                            getPoints(polygon);
+                        }
+                    }
+                }
+            }
+        }
+
+        function getPoints(geometry){
+            if(geometry.CLASS_NAME === 'SuperMap.Geometry.MultiPolygon' ||
+            geometry.CLASS_NAME === 'SuperMap.Geometry.MultiLineString' ||
+            geometry.CLASS_NAME === 'SuperMap.Geometry.MultiPoint'){
+            for(var i = 0,len = geometry.components.length;i<len;i++){
+                getPoints(geometry.components[i]);
+            }
+            return;
+        }
+            var gpsPoints = [];
+                            for(var k = 0;k<geometry.components.length;)//k++)
                             {
-                                var linearRing = polygon.components[k];
+                                var linearRing = geometry.components[k];
                                 for(var n = 0;n<linearRing.components.length;)//n++)
                                 {
                                     var point =  linearRing.components[n];
@@ -60,11 +76,8 @@
                             var line =new SuperMap.Geometry.LineString(gpsPoints);
                             var polylines = SuperMap.Web.iConnector.AMap.transferLine([line]);
                             mapObj.addOverlays(polylines[0]);
-                        }
-                    }
-                }
-            }
         }
+
         function processFailed(e) {
             alert(e.error.errorMsg);
         }
