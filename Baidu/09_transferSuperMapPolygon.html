@@ -66,19 +66,19 @@
         }
         var gpsPoints = [];
         for(var k = 0;k<geometry.components.length;)
-                        {
-                            var linearRing = geometry.components[k];
-                            for(var n = 0;n<linearRing.components.length;)
-                            {
-                                var point =  linearRing.components[n];
+        {
+            var linearRing = geometry.components[k];
+            for(var n = 0;n<linearRing.components.length;)
+            {
+                var point =  linearRing.components[n];
 
-                                //GPS坐标
-                                gpsPoints.push(new SuperMap.Geometry.Point(point.x,point.y));
+                //GPS坐标
+                gpsPoints.push(new SuperMap.Geometry.Point(point.x,point.y));
 
-                                n = n+20;
-                            }
-                            k = k+5;
-                            break;
+                n = n+20;
+            }
+            k = k+5;
+            break;
         }
         var linearRings = new SuperMap.Geometry.LinearRing(gpsPoints);
         var region = new SuperMap.Geometry.Polygon([linearRings]);

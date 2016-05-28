@@ -61,8 +61,19 @@
         function bufferAnalystCompleted(BufferAnalystEventArgs)
         {
             var bufferResultGeometry = BufferAnalystEventArgs.result.resultGeometry;
-            regions = SuperMap.Web.iConnector.AMap.transferPolygon([bufferResultGeometry]);
-            map.addOverlays(regions[0]);   //生成的缓冲区加载到地图
+            
+            addGeometry(bufferResultGeometry,map);
+        }
+
+        function addGeometry(geometry,map){
+            if(geometry.CLASS_NAME === 'SuperMap.Geometry.MultiPolygon'){
+                for(var i = 0,len = geometry.components.length;i<len;i++){
+                    addGeometry(geometry.components[i],map);
+                }
+                return;
+            }
+            regions = SuperMap.Web.iConnector.AMap.transferPolygon([geometry]);
+            regions[0].setMap(map); //生成的缓冲区加载到地图
         }
     </script>
 </head>
