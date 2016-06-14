@@ -38,6 +38,11 @@ SuperMap.Web.iConnector.Google.getLayer = function(url,options){
     layer.tileSize = new google.maps.Size(256, 256);
     var layerUrl = url + "/image.png?redirect=false&width=256&height=256";
 
+    //为url添加安全认证信息片段
+    if (SuperMap.Credential && SuperMap.Credential.CREDENTIAL) {
+        layerUrl += "&" + SuperMap.Credential.CREDENTIAL.getUrlParameters();
+    }
+
     //切片是否透明
     var transparent = true;
     if(options && options.transparent !=undefined)
